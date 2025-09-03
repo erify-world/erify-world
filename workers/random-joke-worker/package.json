@@ -1,0 +1,20 @@
+{
+  "name": "random-joke-worker",
+  "version": "1.0.0",
+  "description": "A Cloudflare Worker that serves random jokes",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20231115.0",
+    "vitest": "^1.0.0",
+    "wrangler": "^3.24.0"
+  },
+  "keywords": ["cloudflare", "worker", "jokes", "api"],
+  "author": "",
+  "license": "MIT"
+}
