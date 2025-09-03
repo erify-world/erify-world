@@ -1,0 +1,29 @@
+name: CI (random-joke-worker)
+
+on:
+  push:
+    paths:
+      - "workers/random-joke-worker/**"
+      - ".github/workflows/ci.yml"
+  pull_request:
+    paths:
+      - "workers/random-joke-worker/**"
+      - ".github/workflows/ci.yml"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: workers/random-joke-worker
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: workers/random-joke-worker/package-lock.json
+      - run: npm ci
+      - run: npm test

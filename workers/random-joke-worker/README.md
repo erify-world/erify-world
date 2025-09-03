@@ -6,8 +6,8 @@ A tiny, production-ready Cloudflare Worker that serves random jokes from externa
 - UI endpoint: `GET /` → simple web page to fetch and display jokes
 - External sources: [JokeAPI](https://v2.jokeapi.dev) with fallback to [icanhazdadjoke](https://icanhazdadjoke.com/api)
 - CORS: preflight handled, 204 with ACAO/ACAM/ACAH headers
-- CI: GitHub Actions runs unit tests (Vitest)
-- Deploy: GitHub Actions deploy to Cloudflare Workers on push to `main` (Wrangler)
+- CI: GitHub Actions runs unit tests (Vitest) via .github/workflows/ci.yml
+- Deploy: GitHub Actions deploys to Cloudflare Workers on push to main via .github/workflows/deploy.yml (Wrangler)
 
 ## Quick start
 
@@ -61,6 +61,7 @@ routes = [
 
 ## Notes
 
+- GitHub Actions only runs workflows from the repository root at .github/workflows. Ensure CI/Deploy workflows live there (not under workers/random-joke-worker/.github/workflows).
 - `JokeAPI` is queried first (single-line, safe-mode). On error, the worker falls back to `icanhazdadjoke`.
 - CORS: `Access-Control-Allow-Origin` reflects the request Origin if present, otherwise `*`. Restrict allowed origins if needed.
 - No secrets required for API usage. Cloudflare credentials are only for deploy.
