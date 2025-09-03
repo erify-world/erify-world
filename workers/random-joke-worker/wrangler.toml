@@ -1,0 +1,8 @@
+name = "random-joke-worker"
+main = "src/worker.js"
+compatibility_date = "2025-09-03"
+
+# To deploy on a custom domain, uncomment and set your route(s):
+# routes = [
+#   { pattern = "jokes.erifyglobal.com/*", zone_name = "erifyglobal.com" }
+# ]
