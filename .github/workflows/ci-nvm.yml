@@ -1,0 +1,122 @@
+---
+name: 🔥 ERIFY™ CI - Node.js Matrix Test
+
+"on":
+  push:
+    branches: [main, master, develop]
+  pull_request:
+    branches: [main, master, develop]
+  workflow_dispatch:
+
+jobs:
+  nvm-matrix-test:
+    name: 🚀 Node.js ${{ matrix.node-version }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        node-version: ['18', '20', '22']
+
+    steps:
+      - name: 📦 Checkout ERIFY™ World Repository
+        uses: actions/checkout@v4
+
+      - name: 🔧 Install NVM
+        shell: bash
+        run: |
+          # Install NVM using the official install script
+          curl -o- \
+            https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
+
+          # Source NVM to make it available in current shell
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+          [ -s "$NVM_DIR/bash_completion" ] && \
+            \. "$NVM_DIR/bash_completion"
+
+          # Verify NVM installation
+          nvm --version
+
+      - name: ⚡ Install and Use Node.js ${{ matrix.node-version }}
+        shell: bash
+        run: |
+          # Source NVM
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+          # Install specified Node.js version
+          nvm install ${{ matrix.node-version }}
+          nvm use ${{ matrix.node-version }}
+
+          # Verify installations
+          echo "Node.js version: $(node --version)"
+          echo "NPM version: $(npm --version)"
+          echo "NVM version: $(nvm --version)"
+
+      - name: 🔍 NVM Smoke Tests
+        shell: bash
+        run: |
+          # Source NVM
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+          # Use the specified Node.js version
+          nvm use ${{ matrix.node-version }}
+
+          # Test basic NVM commands
+          echo "=== Testing NVM Commands ==="
+          nvm list
+          nvm current
+          nvm which node
+          nvm which npm
+
+          # Test basic Node.js functionality
+          echo "=== Testing Node.js Functionality ==="
+          node -e "console.log('✅ ERIFY™ World - Node.js', \
+            process.version, 'is working!')"
+
+          # Test NPM functionality
+          echo "=== Testing NPM Functionality ==="
+          npm --version
+          npm list -g --depth=0
+
+          # Create a test package.json and install a package
+          echo '{"name": "erify-test", "version": "1.0.0", "private": true}' \
+            > package.json
+          npm install lodash --no-package-lock
+          node -e "const _ = require('lodash'); \
+            console.log('✅ ERIFY™ World - NPM package installation successful!')"
+
+      - name: 🧪 Advanced NVM Tests
+        shell: bash
+        run: |
+          # Source NVM
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+          # Test version switching (if multiple versions available)
+          echo "=== Testing Version Management ==="
+          nvm list
+
+          # Test alias functionality
+          nvm alias erify-test ${{ matrix.node-version }}
+          nvm use erify-test
+          nvm current
+
+          # Clean up alias
+          nvm unalias erify-test
+
+          echo "✅ All NVM tests passed for Node.js \
+            ${{ matrix.node-version }} on ${{ matrix.os }}!"
+
+      - name: 💎 ERIFY™ Success Summary
+        shell: bash
+        run: |
+          echo "🔥🔥🔥 ERIFY™ World CI Success! 🔥🔥🔥"
+          echo "✅ OS: ${{ matrix.os }}"
+          echo "✅ Node.js: ${{ matrix.node-version }}"
+          echo "✅ NVM: Fully functional"
+          echo "💎 ERIFY™ Technologies - Building the future, \
+            one commit at a time!"
