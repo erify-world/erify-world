@@ -1,0 +1,24 @@
+{
+  "name": "random-joke-worker",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Cloudflare Worker that serves random jokes via external APIs with CORS and a minimal UI.",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "dev": "wrangler dev --local",
+    "deploy": "wrangler deploy",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "format": "prettier -w ."
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240903.0",
+    "prettier": "^3.3.3",
+    "vitest": "^2.0.5",
+    "wrangler": "^3.76.0"
+  }
+}

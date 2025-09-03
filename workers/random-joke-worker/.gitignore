@@ -1,0 +1,5 @@
+node_modules
+dist
+.workers
+.vscode
+.DS_Store
