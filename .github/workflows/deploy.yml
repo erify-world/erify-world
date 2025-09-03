@@ -1,0 +1,39 @@
+name: Deploy (random-joke-worker)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+    paths:
+      - "workers/random-joke-worker/**"
+      - ".github/workflows/deploy.yml"
+
+concurrency:
+  group: random-joke-worker-deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+    defaults:
+      run:
+        working-directory: workers/random-joke-worker
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: workers/random-joke-worker/package-lock.json
+      - name: Install deps
+        run: npm ci
+      - name: Test
+        run: npm test
+      - name: Deploy with Wrangler
+        run: npx wrangler deploy --quiet
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
