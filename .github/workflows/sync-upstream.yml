@@ -1,0 +1,225 @@
+---
+name: 🔄 ERIFY™ Sync Upstream
+
+"on":
+  schedule:
+    # Run every Monday at 03:00 UTC
+    - cron: '0 3 * * 1'
+  workflow_dispatch:
+    inputs:
+      upstream_repo:
+        description: 'Upstream repository to sync from'
+        required: false
+        default: 'nvm-sh/nvm'
+        type: string
+      force_sync:
+        description: 'Force sync even if no changes detected'
+        required: false
+        default: false
+        type: boolean
+
+env:
+  UPSTREAM_REPO: ${{ github.event.inputs.upstream_repo || 'nvm-sh/nvm' }}
+
+jobs:
+  sync-upstream:
+    name: 🔄 Sync with Upstream Repository
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write
+      pull-requests: write
+      
+    steps:
+      - name: 📦 Checkout ERIFY™ World Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: 🔍 Auto-detect Default Branch
+        id: detect-branch
+        run: |
+          # Get the default branch name
+          DEFAULT_BRANCH=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@')
+          echo "default_branch=$DEFAULT_BRANCH" >> $GITHUB_OUTPUT
+          echo "🎯 Detected default branch: $DEFAULT_BRANCH"
+          
+      - name: 🔗 Configure Upstream Remote
+        run: |
+          # Add upstream remote if it doesn't exist
+          if ! git remote get-url upstream 2>/dev/null; then
+            git remote add upstream https://github.com/${{ env.UPSTREAM_REPO }}.git
+            echo "✅ Added upstream remote: ${{ env.UPSTREAM_REPO }}"
+          else
+            echo "ℹ️ Upstream remote already exists"
+          fi
+          
+          # Fetch upstream changes
+          git fetch upstream
+          echo "📡 Fetched upstream changes"
+          
+      - name: 🔄 Check for Upstream Changes
+        id: check-changes
+        run: |
+          # Get upstream default branch
+          UPSTREAM_DEFAULT=$(git symbolic-ref refs/remotes/upstream/HEAD 2>/dev/null | sed 's@^refs/remotes/upstream/@@' || echo "master")
+          
+          # If upstream HEAD doesn't exist, try common branch names
+          if ! git show-ref --verify --quiet refs/remotes/upstream/$UPSTREAM_DEFAULT; then
+            for branch in main master; do
+              if git show-ref --verify --quiet refs/remotes/upstream/$branch; then
+                UPSTREAM_DEFAULT=$branch
+                break
+              fi
+            done
+          fi
+          
+          echo "upstream_branch=$UPSTREAM_DEFAULT" >> $GITHUB_OUTPUT
+          echo "🎯 Upstream default branch: $UPSTREAM_DEFAULT"
+          
+          # Check if there are any new commits
+          LOCAL_COMMIT=$(git rev-parse HEAD)
+          UPSTREAM_COMMIT=$(git rev-parse upstream/$UPSTREAM_DEFAULT)
+          
+          echo "local_commit=$LOCAL_COMMIT" >> $GITHUB_OUTPUT
+          echo "upstream_commit=$UPSTREAM_COMMIT" >> $GITHUB_OUTPUT
+          
+          if [ "$LOCAL_COMMIT" != "$UPSTREAM_COMMIT" ]; then
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "🔥 New upstream changes detected!"
+            
+            # Get commit count and summary
+            COMMIT_COUNT=$(git rev-list --count HEAD..upstream/$UPSTREAM_DEFAULT)
+            echo "commit_count=$COMMIT_COUNT" >> $GITHUB_OUTPUT
+            echo "📊 Found $COMMIT_COUNT new commits"
+            
+          else
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "✅ Repository is up to date with upstream"
+          fi
+          
+      - name: 🚀 Create Sync Branch
+        if: steps.check-changes.outputs.has_changes == 'true' || github.event.inputs.force_sync == 'true'
+        id: create-branch
+        run: |
+          # Create unique branch name with timestamp
+          TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+          BRANCH_NAME="erify/sync-upstream-$TIMESTAMP"
+          
+          echo "branch_name=$BRANCH_NAME" >> $GITHUB_OUTPUT
+          
+          # Create and checkout new branch
+          git checkout -b $BRANCH_NAME
+          echo "🌿 Created sync branch: $BRANCH_NAME"
+          
+      - name: 🔄 Merge Upstream Changes
+        if: steps.check-changes.outputs.has_changes == 'true' || github.event.inputs.force_sync == 'true'
+        id: merge-upstream
+        run: |
+          UPSTREAM_BRANCH=${{ steps.check-changes.outputs.upstream_branch }}
+          
+          # Configure git user for the merge commit
+          git config user.name "ERIFY™ Sync Bot"
+          git config user.email "bot@erifyworld.com"
+          
+          # Attempt to merge upstream changes
+          if git merge upstream/$UPSTREAM_BRANCH --no-edit -m "🔄 ERIFY™ Sync: Merge upstream changes from ${{ env.UPSTREAM_REPO }}@$UPSTREAM_BRANCH"; then
+            echo "merge_success=true" >> $GITHUB_OUTPUT
+            echo "✅ Successfully merged upstream changes"
+          else
+            echo "merge_success=false" >> $GITHUB_OUTPUT
+            echo "❌ Merge conflicts detected - manual intervention required"
+            
+            # Create a commit with conflict markers for review
+            git add .
+            git commit -m "🚨 ERIFY™ Sync: Merge conflicts from upstream - requires manual resolution"
+          fi
+          
+      - name: 🚀 Push Sync Branch
+        if: steps.check-changes.outputs.has_changes == 'true' || github.event.inputs.force_sync == 'true'
+        run: |
+          BRANCH_NAME=${{ steps.create-branch.outputs.branch_name }}
+          git push origin $BRANCH_NAME
+          echo "📤 Pushed sync branch: $BRANCH_NAME"
+          
+      - name: 🔥 Create Pull Request
+        if: steps.check-changes.outputs.has_changes == 'true' || github.event.inputs.force_sync == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const branchName = '${{ steps.create-branch.outputs.branch_name }}';
+            const commitCount = '${{ steps.check-changes.outputs.commit_count }}';
+            const mergeSuccess = '${{ steps.merge-upstream.outputs.merge_success }}';
+            const upstreamRepo = '${{ env.UPSTREAM_REPO }}';
+            const upstreamBranch = '${{ steps.check-changes.outputs.upstream_branch }}';
+            const defaultBranch = '${{ steps.detect-branch.outputs.default_branch }}';
+            
+            const title = mergeSuccess === 'true' 
+              ? `🔄 ERIFY™ Sync: ${commitCount} new commits from upstream`
+              : `🚨 ERIFY™ Sync: Merge conflicts from upstream (${commitCount} commits)`;
+            
+            const body = `## 🔥 ERIFY™ World Upstream Sync
+            
+            This PR was automatically created by the ERIFY™ Sync Bot to merge upstream changes.
+            
+            ### 📊 Sync Details
+            - **Upstream Repository:** \`${upstreamRepo}\`
+            - **Upstream Branch:** \`${upstreamBranch}\`
+            - **New Commits:** ${commitCount}
+            - **Merge Status:** ${mergeSuccess === 'true' ? '✅ Clean merge' : '❌ Conflicts detected'}
+            
+            ### 🎯 What's New
+            This sync includes ${commitCount} new commits from the upstream repository.
+            
+            ${mergeSuccess === 'false' ? `
+            ### ⚠️ Manual Action Required
+            This PR contains merge conflicts that require manual resolution. Please:
+            1. Review the conflicted files
+            2. Resolve conflicts manually
+            3. Test the changes thoroughly
+            4. Update this PR
+            ` : `
+            ### ✅ Ready for Review
+            The upstream changes have been successfully merged without conflicts.
+            Please review and merge when ready.
+            `}
+            
+            ### 🔗 Related Links
+            - [Upstream Repository](https://github.com/${upstreamRepo})
+            - [Compare Changes](https://github.com/${upstreamRepo}/compare/${{ steps.check-changes.outputs.local_commit }}...${{ steps.check-changes.outputs.upstream_commit }})
+            
+            ---
+            
+            *💎 Automated by ERIFY™ Technologies - Building the future, one sync at a time!*
+            `;
+            
+            const { data: pr } = await github.rest.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: title,
+              head: branchName,
+              base: defaultBranch,
+              body: body,
+              draft: mergeSuccess === 'false'
+            });
+            
+            console.log(`🔥 Created PR #${pr.number}: ${pr.title}`);
+            
+            // Add labels
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr.number,
+              labels: mergeSuccess === 'true' 
+                ? ['🔄 upstream-sync', '🤖 automated', '✅ ready-for-review']
+                : ['🔄 upstream-sync', '🤖 automated', '⚠️ conflicts', '🔧 needs-manual-review']
+            });
+            
+      - name: 💎 ERIFY™ Sync Summary
+        run: |
+          echo "🔥🔥🔥 ERIFY™ World Upstream Sync Complete! 🔥🔥🔥"
+          echo "✅ Upstream Repository: ${{ env.UPSTREAM_REPO }}"
+          echo "✅ Changes Detected: ${{ steps.check-changes.outputs.has_changes }}"
+          echo "✅ Commits Synced: ${{ steps.check-changes.outputs.commit_count }}"
+          echo "💎 ERIFY™ Technologies - Keeping your fork fresh and up-to-date!"

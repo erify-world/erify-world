@@ -1,4 +1,6 @@
 # 💎🔥 Hi there, I’m DC ERIFY 👋  
+[![🔥 ERIFY™ CI](https://github.com/erify-world/erify-world/actions/workflows/ci-nvm.yml/badge.svg)](https://github.com/erify-world/erify-world/actions/workflows/ci-nvm.yml)
+[![🔄 Upstream Sync](https://github.com/erify-world/erify-world/actions/workflows/sync-upstream.yml/badge.svg)](https://github.com/erify-world/erify-world/actions/workflows/sync-upstream.yml)
 
 Founder of **ERIFY™ Technologies** — building a global ecosystem of AI-powered platforms, luxury digital experiences, and innovation that inspires.  
 
