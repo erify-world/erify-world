@@ -1,4 +1,3 @@
----
 name: 🧭 Triage
 
 on:
@@ -16,22 +15,45 @@ jobs:
     if: >
       github.event.pull_request.draft == false &&
       !contains(fromJson('["dependabot[bot]","github-actions[bot]"]'),
-               github.event.pull_request.user.login)
+                github.event.pull_request.user.login)
     runs-on: ubuntu-latest
-
     steps:
-      - name: Add `needs-review` label
+      - name: Ensure `needs-review` label exists
         uses: actions/github-script@v7
         with:
           script: |
             const label = 'needs-review';
+            try {
+              await github.rest.issues.getLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                name: label
+              });
+            } catch (e) {
+              if (e.status === 404) {
+                await github.rest.issues.createLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  name: label,
+                  color: '0e8a16',
+                  description: 'PR awaiting review'
+                });
+              } else {
+                core.warning(`Could not verify/create label: ${e.message}`);
+              }
+            }
+
+      - name: Add `needs-review` label
+        uses: actions/github-script@v7
+        with:
+          script: |
             const pr = context.payload.pull_request;
             try {
               await github.rest.issues.addLabels({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: pr.number,
-                labels: [label]
+                labels: ['needs-review']
               });
             } catch (e) {
               core.warning(`Label skipped: ${e.message}`);
@@ -43,13 +65,16 @@ jobs:
           script: |
             const assignee = 'erify-world';
             const pr = context.payload.pull_request;
-
             const already = (pr.assignees || []).some(a => a.login === assignee);
             if (!already) {
-              await github.rest.issues.addAssignees({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: pr.number,
-                assignees: [assignee]
-              });
+              try {
+                await github.rest.issues.addAssignees({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: pr.number,
+                  assignees: [assignee]
+                });
+              } catch (e) {
+                core.warning(`Assign skipped: ${e.message}`);
+              }
             }
