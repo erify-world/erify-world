@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ERIFY™ - Luxury at the Speed of Light</title>
+  <link rel="stylesheet" href="../styles/erify-glow-kit.css">
+  <style>
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0A0B0D 0%, #1A1C20 100%);
+      padding-bottom: 100px; /* Space for fixed bottom nav */
+    }
+    
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem 1rem;
+    }
+    
+    .hero__title {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, var(--erify-blue) 0%, var(--erify-orange-warm) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .hero__subtitle {
+      font-size: 1.25rem;
+      color: var(--erify-text-muted);
+      margin-bottom: 3rem;
+      max-width: 600px;
+    }
+    
+    .section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 4rem 2rem;
+    }
+    
+    .section__title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 2rem;
+      color: var(--erify-text);
+    }
+    
+    .section__content {
+      text-align: center;
+      font-size: 1.125rem;
+      color: var(--erify-text-muted);
+      line-height: 1.8;
+    }
+    
+    .cta-container {
+      display: flex;
+      justify-content: center;
+      margin: 2rem 0;
+    }
+    
+    @media (max-width: 768px) {
+      .hero__title {
+        font-size: 2.25rem;
+      }
+      
+      .hero__subtitle {
+        font-size: 1.125rem;
+      }
+      
+      .section {
+        padding: 3rem 1rem;
+      }
+      
+      .section__title {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Hero Section -->
+  <section class="hero">
+    <h1 class="hero__title">ERIFY™</h1>
+    <p class="hero__subtitle">Luxury at the Speed of Light - Experience cinematic excellence powered by next-generation AI</p>
+    
+    <!-- Glowing Call-to-Action Button -->
+    <div class="cta-container">
+      <a href="#ecosystem" class="btn btn--glow card--glow">✨ Ignite Your Legacy</a>
+    </div>
+  </section>
+
+  <!-- Crest Section -->
+  <section id="crest" class="section">
+    <h2 class="section__title">💎 Crest</h2>
+    <div class="section__content">
+      <p>Discover the pinnacle of luxury design with our exclusive Crest collection. Each element crafted with precision and elegance.</p>
+    </div>
+  </section>
+
+  <!-- Neon Section -->
+  <section id="neon" class="section">
+    <h2 class="section__title">🔥 Neon</h2>
+    <div class="section__content">
+      <p>Experience the electric energy of our Neon aesthetic. Vibrant glows and dynamic animations that bring your content to life.</p>
+    </div>
+  </section>
+
+  <!-- Legacy Section -->
+  <section id="legacy" class="section">
+    <h2 class="section__title">📜 Legacy</h2>
+    <div class="section__content">
+      <p>Build something that lasts. Our Legacy framework ensures your creations stand the test of time with timeless design principles.</p>
+    </div>
+  </section>
+
+  <!-- Ecosystem Section -->
+  <section id="ecosystem" class="section">
+    <h2 class="section__title">🌍 Ecosystem</h2>
+    <div class="section__content">
+      <p>Welcome to the ERIFY™ ecosystem - where luxury meets innovation. Join a community of creators pushing the boundaries of digital excellence.</p>
+      <p>Your legacy starts here. Every pixel, every interaction, every moment crafted with the precision of a diamond and the energy of flame.</p>
+    </div>
+  </section>
+
+  <!-- Fixed Bottom Navigation Bar -->
+  <nav class="nav-bottom">
+    <div class="nav-bottom__container">
+      <a href="#" class="nav-bottom__item nav-bottom__item--active">
+        <span class="nav-bottom__icon">🏠</span>
+        <span class="nav-bottom__label">Home</span>
+      </a>
+      <a href="#crest" class="nav-bottom__item">
+        <span class="nav-bottom__icon">💎</span>
+        <span class="nav-bottom__label">Crest</span>
+      </a>
+      <a href="#neon" class="nav-bottom__item">
+        <span class="nav-bottom__icon">🔥</span>
+        <span class="nav-bottom__label">Neon</span>
+      </a>
+      <a href="#legacy" class="nav-bottom__item">
+        <span class="nav-bottom__icon">📜</span>
+        <span class="nav-bottom__label">Legacy</span>
+      </a>
+      <a href="#ecosystem" class="nav-bottom__item">
+        <span class="nav-bottom__icon">🌍</span>
+        <span class="nav-bottom__label">Contact</span>
+      </a>
+    </div>
+  </nav>
+
+  <script>
+    // Add active state handling for navigation
+    document.addEventListener('DOMContentLoaded', function() {
+      const navItems = document.querySelectorAll('.nav-bottom__item');
+      const sections = document.querySelectorAll('section[id]');
+      
+      function updateActiveNav() {
+        const scrollPos = window.scrollY + 100;
+        
+        sections.forEach((section, index) => {
+          const top = section.offsetTop;
+          const height = section.offsetHeight;
+          
+          if (scrollPos >= top && scrollPos < top + height) {
+            navItems.forEach(item => item.classList.remove('nav-bottom__item--active'));
+            const targetHref = '#' + section.id;
+            const activeItem = document.querySelector(`a[href="${targetHref}"]`);
+            if (activeItem) {
+              activeItem.classList.add('nav-bottom__item--active');
+            }
+          }
+        });
+        
+        // Handle home section (top of page)
+        if (window.scrollY < 100) {
+          navItems.forEach(item => item.classList.remove('nav-bottom__item--active'));
+          document.querySelector('a[href="#"]').classList.add('nav-bottom__item--active');
+        }
+      }
+      
+      window.addEventListener('scroll', updateActiveNav);
+      
+      // Smooth scrolling for navigation links
+      navItems.forEach(item => {
+        item.addEventListener('click', function(e) {
+          const href = this.getAttribute('href');
+          if (href && href !== '#') {
+            e.preventDefault();
+            const target = document.querySelector(href);
+            if (target) {
+              target.scrollIntoView({ behavior: 'smooth' });
+            }
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
