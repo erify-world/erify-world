@@ -1,0 +1,115 @@
+---
+name: 🧾 Postmortem Report
+description: Document an ERIFY™ incident with full timeline, RCA, and actions.
+title: "postmortem: <incident name> — <SEV1|SEV2|SEV3> — <date>"
+labels: ["type:postmortem", "needs-review", "incident"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## ✨ ERIFY™ Glow — Postmortem
+        Capture facts, learnings, and actions with luxury clarity.
+
+  - type: input
+    id: datetime
+    attributes:
+      label: Date / Time (UTC)
+      placeholder: "2025-09-07 18:42 UTC"
+    validations:
+      required: true
+
+  - type: input
+    id: duration
+    attributes:
+      label: Duration
+      placeholder: "1h 12m"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options:
+        - SEV1 — Major outage / critical loss
+        - SEV2 — Degraded core path
+        - SEV3 — Minor issue / cosmetic
+      default: 1
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - P0 — Immediate
+        - P1 — High
+        - P2 — Normal
+        - P3 — Low
+      default: 1
+    validations:
+      required: true
+
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact
+      description: Effect on users, systems, or brand.
+    validations:
+      required: true
+
+  - type: textarea
+    id: rca
+    attributes:
+      label: Root cause analysis
+      description: What went wrong? Include contributing factors.
+    validations:
+      required: true
+
+  - type: textarea
+    id: timeline
+    attributes:
+      label: Incident timeline
+      description: Use HH:MM:SS and bullets for events.
+      value: |
+        - 12:03:11 — Detection: …
+        - 12:07:22 — Initial response: …
+        - 12:41:09 — Mitigation: …
+        - 13:15:00 — Recovery: …
+    validations:
+      required: true
+
+  - type: textarea
+    id: resolution
+    attributes:
+      label: Resolution / Mitigation
+      description: What fixed it? Was it fully mitigated?
+
+  - type: textarea
+    id: actions
+    attributes:
+      label: Preventative actions
+      description: Monitoring, tests, process updates, owners + due dates.
+      value: |
+        - [ ] Action — Owner — Due …
+        - [ ] Action — Owner — Due …
+
+  - type: textarea
+    id: comms
+    attributes:
+      label: Communication log
+      description: Internal & customer updates, channels, timestamps.
+
+  - type: input
+    id: reviewers
+    attributes:
+      label: Reviewed by
+      placeholder: "Name (@handle)"
+
+  - type: input
+    id: approver
+    attributes:
+      label: Approved by
+      placeholder: "Name (@handle)"

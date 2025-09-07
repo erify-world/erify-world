@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 🔥 ERIFY™ Security
+    url: https://erify.world/security
+    about: Report security vulnerabilities privately.
+  - name: 💬 Questions / Discussions
+    url: https://github.com/erify-world/erify-world/discussions
+    about: Ask questions or propose ideas.

@@ -1,0 +1,79 @@
+---
+name: ✨ Feature Request
+description: Propose a new capability that elevates the ERIFY™ experience.
+title: "feat: <concise feature name>"
+labels: ["type:feature", "needs-review"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 💎 ERIFY™ Glow — Feature Brief
+        Describe the value clearly and keep it elegant and focused.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: What would you like to build?
+      description: One or two sentences that capture the essence of the feature.
+      placeholder: "Add ERIFY Wallet card linking in profile…"
+    validations:
+      required: true
+
+  - type: textarea
+    id: user_story
+    attributes:
+      label: User story
+      description: Who benefits and why?
+      placeholder: "As a creator, I want…, so that…"
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: Bullet points (Given/When/Then or checklist).
+      value: |
+        - [ ] …
+        - [ ] …
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - P0 — Critical
+        - P1 — High
+        - P2 — Normal
+        - P3 — Low
+      default: 2
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area / Component
+      options:
+        - App
+        - API
+        - Branding / Pages
+        - Data / Analytics
+        - DevOps / Actions
+        - Docs
+      multiple: true
+
+  - type: textarea
+    id: risks
+    attributes:
+      label: Risks / open questions
+      placeholder: "Dependencies, unknowns, legal, security…"
+
+  - type: textarea
+    id: extras
+    attributes:
+      label: Links / references
+      placeholder: "Designs, specs, prior art, tickets…"

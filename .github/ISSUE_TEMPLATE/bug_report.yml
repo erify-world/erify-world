@@ -1,0 +1,97 @@
+---
+name: 🐛 Bug Report
+description: Report a defect impacting users, brand, or systems.
+title: "fix: <short bug title>"
+labels: ["type:bug", "needs-triage"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🔍 ERIFY™ Glow — Bug Report
+        Help us reproduce quickly with clear steps and context.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: What happened?
+      description: Clear, concise description of the issue.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      description: SEV defines user/business impact.
+      options:
+        - SEV1 — Major outage / critical loss
+        - SEV2 — Degraded core path
+        - SEV3 — Minor issue / cosmetic
+      default: 2
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - P0 — Immediate
+        - P1 — High
+        - P2 — Normal
+        - P3 — Low
+      default: 2
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Numbered list.
+      value: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+
+  - type: input
+    id: env
+    attributes:
+      label: Environment
+      placeholder: "iOS 17.5 / Chrome 126 / Node 20 / Prod"
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / screenshots
+      description: Paste logs (use code blocks) or attach images.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area / Component
+      options:
+        - App
+        - API
+        - Branding / Pages
+        - Data / Analytics
+        - DevOps / Actions
+        - Docs
+      multiple: true
