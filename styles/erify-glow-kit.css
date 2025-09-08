@@ -12,4 +12,164 @@
   --erify-warning: #F39C12;
   --erify-danger: #E63946;
 }
-/* Add full Glow Kit component CSS here for production use */
+
+/* Base styles */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Inter, system-ui, sans-serif;
+  background: var(--erify-black);
+  color: var(--erify-text);
+  line-height: 1.6;
+}
+
+/* Typography */
+.display {
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--erify-text);
+}
+
+.subtitle {
+  font-size: 1.125rem;
+  color: var(--erify-text-muted);
+  margin: 0.5rem 0 2rem;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 999px;
+  font-size: 1rem;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: var(--erify-elev-1);
+  color: var(--erify-text);
+}
+
+.btn:hover {
+  transform: scale(1.03);
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+/* Glowing button with neon-blue aura and flame gold accents */
+.btn--glow {
+  background: linear-gradient(135deg, var(--erify-orange) 0%, var(--erify-orange-warm) 60%, #FFC06A 100%);
+  box-shadow: 
+    0 0 18px 4px var(--erify-blue),
+    0 0 28px 10px var(--erify-orange-warm);
+  color: var(--erify-black);
+}
+
+.btn--glow:hover {
+  box-shadow: 
+    0 0 24px 6px var(--erify-blue),
+    0 0 36px 14px var(--erify-orange-warm);
+}
+
+/* Cards */
+.card {
+  background: var(--erify-elev-1);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.card--glow {
+  box-shadow: 
+    0 0 18px 4px var(--erify-blue),
+    0 0 28px 10px var(--erify-orange-warm);
+}
+
+.card--glow:hover {
+  box-shadow: 
+    0 0 24px 6px var(--erify-blue),
+    0 0 36px 14px var(--erify-orange-warm);
+  transform: scale(1.02);
+}
+
+/* Bottom Navigation */
+.nav-bottom {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(17, 19, 21, 0.95);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--erify-elev-2);
+  padding: 0.75rem 0;
+  z-index: 1000;
+  box-shadow: 
+    0 -4px 20px rgba(0, 0, 0, 0.3),
+    0 0 10px 2px var(--erify-blue);
+}
+
+.nav-bottom__container {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.nav-bottom__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: var(--erify-text-muted);
+  transition: all 0.2s ease;
+  padding: 0.5rem;
+  border-radius: 8px;
+  min-width: 60px;
+}
+
+.nav-bottom__item:hover {
+  color: var(--erify-text);
+  background: rgba(25, 204, 250, 0.1);
+}
+
+.nav-bottom__item--active {
+  color: var(--erify-blue);
+  box-shadow: 0 0 10px 2px var(--erify-blue);
+}
+
+.nav-bottom__icon {
+  font-size: 1.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.nav-bottom__label {
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .nav-bottom__label {
+    display: none;
+  }
+  
+  .nav-bottom__icon {
+    font-size: 1.5rem;
+  }
+  
+  .display {
+    font-size: 1.875rem;
+  }
+}
