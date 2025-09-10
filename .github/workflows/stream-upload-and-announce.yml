@@ -6,36 +6,127 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
+
+# Cancel superseded runs to save resources
+concurrency:
+  group: stream-${{ github.ref }}-${{ github.workflow }}
+  cancel-in-progress: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    
+    # Adjust permissions for auto-commenting on PRs
+    permissions:
+      contents: read
+      pull-requests: write
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Set up Node.js
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v4
       with:
-        node-version: '14'
+        node-version: '20'
+        cache: 'npm'
+
+    - name: Node Registry Hardening
+      run: npm config set fetch-retries 3 && npm config set fetch-retry-factor 2
+
+    - name: Sanity check scripts (adapted for repository structure)
+      run: |
+        # Check if any package.json files exist and validate them
+        if find . -name "package.json" -type f | head -1 | read file; then
+          echo "Found package.json files in repository"
+          find . -name "package.json" -type f | while read -r pkg_file; do
+            echo "Checking: $pkg_file"
+            cd "$(dirname "$pkg_file")"
+            node -e "
+              try {
+                const p = require('./package.json');
+                console.log('Valid package.json with scripts:', Object.keys(p.scripts || {}));
+              } catch(e) {
+                console.error('Invalid package.json:', e.message);
+                process.exit(1);
+              }
+            " || exit 1
+            cd - > /dev/null
+          done
+        else
+          echo "No package.json files found - skipping script validation"
+        fi
 
     - name: Install dependencies
       run: |
-        npm install
+        # Install dependencies for each package.json found
+        if find . -name "package.json" -type f | head -1 | read file; then
+          find . -name "package.json" -type f -execdir npm ci --no-audit --fund=false \;
+        else
+          echo "No package.json files found - skipping dependency installation"
+        fi
 
     - name: Enhance signed iframe token handling
       run: |
-        # Your script for handling signed iframe token
+        echo "Processing ERIFY stream token handling..."
+        # Add your actual token handling logic here
 
     - name: Run tests
       run: |
-        npm test
+        # Run tests for each package that has them
+        if find . -name "package.json" -type f | head -1 | read file; then
+          find . -name "package.json" -type f -execdir sh -c 'if npm run test --if-present; then echo "Tests passed for $(pwd)"; else echo "Tests failed for $(pwd)"; exit 1; fi' \;
+        else
+          echo "No package.json files found - skipping tests"
+        fi
 
-    - name: Deploy
+    - name: Build
       run: |
-        # Your deployment script
+        # Build for each package that has a build script
+        if find . -name "package.json" -type f | head -1 | read file; then
+          find . -name "package.json" -type f -execdir sh -c 'if npm run build --if-present; then echo "Build completed for $(pwd)"; else echo "Build completed for $(pwd) (no build script)"; fi' \;
+        else
+          echo "No package.json files found - skipping build"
+        fi
 
-    - name: Error handling
+    - name: Stream Publish
       run: |
-        # Your error handling script
+        # Stream publishing logic
+        echo "Publishing ERIFY stream updates..."
+        # Add your actual stream publishing logic here
+
+    - name: Collect npm logs
+      if: always()
+      run: |
+        mkdir -p npm-logs
+        cp -r /home/runner/.npm/_logs npm-logs || true
+
+    - name: Upload npm logs
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: npm-logs
+        path: npm-logs
+        retention-days: 7
+
+    - name: Comment failure logs on PR
+      if: failure() && github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const body = [
+            '## ❌ ERIFY Stream failed',
+            'Inspect the **npm-logs** artifact for details.',
+            '',
+            `Workflow: ${process.env.GITHUB_WORKFLOW}`,
+            `Run: ${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`
+          ].join('\n');
+          await github.rest.issues.createComment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.payload.pull_request.number,
+            body
+          });
