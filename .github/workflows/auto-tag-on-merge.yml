@@ -1,0 +1,107 @@
+name: Auto Tag on Release Merge
+
+on:
+  workflow_run:
+    workflows: ["CI"]      # must match your CI workflow name exactly
+    types: [completed]
+
+jobs:
+  tag-release:
+    # Only run when CI succeeded AND it was a pull_request-triggered run
+    if: >
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: read
+
+    steps:
+      - name: Resolve PR for this workflow_run
+        id: pr
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const run = context.payload.workflow_run;
+            const owner = context.repo.owner;
+            const repo  = context.repo.repo;
+
+            // Prefer PRs attached directly to the workflow_run
+            let prNumber = null;
+            if (Array.isArray(run.pull_requests) && run.pull_requests.length > 0) {
+              prNumber = run.pull_requests[0].number;
+            }
+
+            // Fallback: resolve PR by head commit SHA (covers odd cases)
+            if (!prNumber) {
+              const sha = run.head_sha;
+              const prs = await github.rest.repos.listPullRequestsAssociatedWithCommit({
+                owner, repo, commit_sha: sha
+              });
+              if (prs.data && prs.data.length > 0) {
+                prNumber = prs.data[0].number;
+              }
+            }
+
+            if (!prNumber) {
+              core.notice('No PR associated with this CI run (likely a push to main). Exiting.');
+              core.setOutput('go', '0');
+              return;
+            }
+
+            const { data: pr } = await github.rest.pulls.get({ owner, repo, pull_number: prNumber });
+
+            const okMerged = pr.merged === true;
+            const okBase   = ['main','production','develop'].includes(pr.base.ref);
+            const okHead   = pr.head.ref.startsWith('release/');
+
+            core.info(`PR #${pr.number} merged=${okMerged} base=${pr.base.ref} head=${pr.head.ref}`);
+
+            if (okMerged && okBase && okHead) {
+              core.setOutput('go', '1');
+              core.setOutput('base', pr.base.ref);
+              core.setOutput('head', pr.head.ref);
+            } else {
+              core.notice('PR not eligible (must be merged release/* into main/production/develop). Exiting.');
+              core.setOutput('go', '0');
+            }
+
+      - name: Stop if not eligible
+        if: steps.pr.outputs.go != '1'
+        run: echo "Not an eligible merged release PR — skipping." && exit 0
+
+      - name: Extract version from branch
+        id: v
+        run: |
+          BRANCH="${{ steps.pr.outputs.head }}"
+          VERSION="${BRANCH#release/}"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create Git Tag
+        run: |
+          git tag "v${{ steps.v.outputs.version }}"
+          git push origin "v${{ steps.v.outputs.version }}"
+
+      # Optional changelog (controlled by repo var or installer toggle)
+      - name: Generate Changelog
+        if: ${{ vars.CHANGELOG == '1' }}
+        uses: heinrichreimer/github-changelog-generator-action@v2.3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          future-release: v${{ steps.v.outputs.version }}
+
+      - name: Commit & push changelog
+        if: ${{ vars.CHANGELOG == '1' }}
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add CHANGELOG.md
+          if ! git diff --cached --quiet; then
+            git commit -m "docs(changelog): v${{ steps.v.outputs.version }}"
+            git push origin "${{ steps.pr.outputs.base }}"
+          else
+            echo "No changelog changes."
+          fi
