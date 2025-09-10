@@ -1,26 +1,41 @@
-name: Stream Upload and Announce
+# Updated Workflow for ERIFY Stream
+
+name: ERIFY Stream Workflow
 
 on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
 
 jobs:
-  upload:
+  build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Install GitHub CLI
-        run: sudo apt-get install -y gh
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
 
-      - name: Upload files
-        run: echo 'Uploading files...'
+    - name: Install dependencies
+      run: |
+        npm install
 
-      - name: Add PR comment
-        run: echo 'Adding comment to PR...'
+    - name: Enhance signed iframe token handling
+      run: |
+        # Your script for handling signed iframe token
 
+    - name: Run tests
+      run: |
+        npm test
+
+    - name: Deploy
+      run: |
+        # Your deployment script
+
+    - name: Error handling
+      run: |
+        # Your error handling script
