@@ -27,4 +27,16 @@ Founder of **ERIFY™ Technologies** — building a global ecosystem of AI-power
 
 ---
 
+## 👑 Reviewer Excellence
+
+### PR #32 Issue Templates & Labels Review
+For reviewers validating **PR #32: Add Luxury Issue Templates, Labels, and Documentation**:
+- **Quick checklist:** `docs/PR32-comment-checklist.md` (copy-paste ready for PR comments)
+- **Detailed review guide:** `docs/PR32-REVIEWER-CHECKLIST.md` (comprehensive validation criteria)
+- **Deploy script:** `./scripts/add-pr32-review-checklist.sh` (displays ready-to-copy checklist)
+
+This system ensures crown-tier quality for issue templates, labels, and contributor onboarding documentation.
+
+---
+
 ⚡ *Building legacy systems, inspiring the world, and creating the future of digital luxury.*  
