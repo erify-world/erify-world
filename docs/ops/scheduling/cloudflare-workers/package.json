@@ -1,0 +1,14 @@
+{
+  "name": "erify-cron-workers",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "test": "wrangler dev --test-scheduled"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240909.0",
+    "wrangler": "^3.78.0",
+    "typescript": "^5.6.0"
+  }
+}

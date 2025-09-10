@@ -18,6 +18,9 @@ Founder of **ERIFY™ Technologies** — building a global ecosystem of AI-power
 - **ERIVOX 🗣💠** → Intelligent assistant for voice + text  
 - **ERIFY Wallet 💳** → Secure digital payments and gift cards  
 
+## 🛠 Operations & Infrastructure
+- **[Cron Scheduling](./docs/ops/scheduling/)** → Ready-to-use templates for Node.js and Cloudflare Workers cron jobs  
+
 ---
 
 ## 🌍 Connect with Me  
