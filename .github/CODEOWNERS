@@ -1,2 +1,39 @@
-# Request a review automatically on all changes
+# CODEOWNERS file for team-based review routing
+# This file routes pull request reviews to appropriate teams based on file paths.
+# See docs/CODEOWNERS.md for detailed explanation.
+
+# Default reviewers for all files
 * @erify-world
+
+# Frontend team - UI components, styles, and web-related files
+/components/ @erify-world/frontend
+/styles/ @erify-world/frontend
+/styleguide/ @erify-world/frontend
+*.html @erify-world/frontend
+*.css @erify-world/frontend
+*.scss @erify-world/frontend
+
+# Backend team - API and server-related files
+/api/ @erify-world/backend
+
+# Operations team - Infrastructure, CI/CD, and deployment files
+/.github/workflows/ @erify-world/ops
+/.github/dependabot.yml @erify-world/ops
+/docker* @erify-world/ops
+/k8s/ @erify-world/ops
+/terraform/ @erify-world/ops
+/scripts/ @erify-world/ops
+*.dockerfile @erify-world/ops
+*.yaml @erify-world/ops
+*.yml @erify-world/ops
+
+# Documentation team - All documentation
+/docs/ @erify-world/docs
+*.md @erify-world/docs
+README* @erify-world/docs
+
+# Special files that require broader review
+/LICENSE @erify-world/ops @erify-world/docs
+/.github/CODEOWNERS @erify-world/ops @erify-world/docs
+/package.json @erify-world/ops @erify-world/backend
+/package-lock.json @erify-world/ops @erify-world/backend

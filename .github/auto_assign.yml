@@ -1,0 +1,33 @@
+# Configuration for auto-assign action
+# This file configures automatic reviewer assignment with fallback reviewers
+
+# Fallback reviewers when team assignments are not available
+# These will be used if the team mentions (@erify-world/team) cannot be resolved
+reviewers:
+  - erify-world
+
+# Team reviewers (preferred method)
+# Note: These require the teams to exist in the GitHub organization
+# teams:
+#   - frontend
+#   - backend
+#   - ops
+#   - docs
+
+# Number of reviewers to assign automatically
+numberOfReviewers: 2
+
+# Skip assignment if any of these labels are present
+skipLabels:
+  - chore
+  - dependencies
+  - docs-only
+  - do not review
+
+# Skip assignment for these users (bots, etc.)
+skipUsers:
+  - dependabot[bot]
+  - github-actions[bot]
+
+# Skip assignment if PR is in draft
+skipDraft: true
