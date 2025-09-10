@@ -1,0 +1,78 @@
+---
+name: 🏷️ Auto Label PRs
+
+on:
+  pull_request_target:
+    types: [opened, reopened, synchronize, edited]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  auto-label:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Apply path-based labels
+        uses: actions/labeler@v5
+        with:
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"
+          configuration-path: .github/labeler.yml
+
+      - name: Apply keyword-based labels
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const title = pr.title.toLowerCase();
+            const body = (pr.body || '').toLowerCase();
+            const combined = `${title} ${body}`;
+            
+            const labels = [];
+            
+            // WIP detection
+            if (title.includes('[wip]') || title.includes('wip:') || 
+                title.includes('draft:') || body.includes('work in progress')) {
+              labels.push('status: wip');
+            }
+            
+            // Documentation detection
+            if (combined.includes('docs') || combined.includes('documentation') || 
+                combined.includes('readme') || combined.includes('guide')) {
+              labels.push('type: docs');
+            }
+            
+            // CI/Workflow detection
+            if (combined.includes('workflow') || combined.includes('github actions') || 
+                combined.includes('ci/cd') || combined.includes('.yml') || 
+                combined.includes('.yaml')) {
+              labels.push('area: ci');
+            }
+            
+            // Chore detection
+            if (combined.includes('chore') || combined.includes('maintenance') || 
+                combined.includes('cleanup') || combined.includes('refactor')) {
+              labels.push('type: chore');
+            }
+            
+            // High priority detection
+            if (combined.includes('urgent') || combined.includes('critical') || 
+                combined.includes('hotfix') || combined.includes('security')) {
+              labels.push('priority: high');
+            }
+            
+            // Apply labels if any were found
+            if (labels.length > 0) {
+              try {
+                await github.rest.issues.addLabels({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: pr.number,
+                  labels: labels
+                });
+                console.log(`Applied labels: ${labels.join(', ')}`);
+              } catch (e) {
+                console.log(`Warning: Could not apply some labels: ${e.message}`);
+              }
+            }
