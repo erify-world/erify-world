@@ -1,0 +1,64 @@
+# Configuration for automatic labeling based on file paths
+# This file defines which labels to apply based on the files changed in a PR
+
+# Web/Frontend related changes
+area:web:
+  - 'components/**/*'
+  - 'styles/**/*'
+  - 'styleguide/**/*'
+  - '**/*.html'
+  - '**/*.css'
+  - '**/*.scss'
+  - '**/*.js'
+  - '**/*.ts'
+  - '**/*.jsx'
+  - '**/*.tsx'
+  - '**/*.vue'
+
+# API/Backend related changes  
+area:api:
+  - 'api/**/*'
+  - 'backend/**/*'
+  - 'server/**/*'
+  - 'src/server/**/*'
+  - 'src/api/**/*'
+  - '**/*.go'
+  - '**/*.py'
+  - '**/*.java'
+  - '**/*.php'
+
+# Infrastructure/Operations related changes
+area:infra:
+  - '.github/workflows/**/*'
+  - '.github/dependabot.yml'
+  - 'docker*'
+  - 'Dockerfile*'
+  - 'k8s/**/*'
+  - 'terraform/**/*'
+  - 'scripts/**/*'
+  - 'deploy/**/*'
+  - '**/*.dockerfile'
+  - 'package.json'
+  - 'package-lock.json'
+  - 'yarn.lock'
+  - 'Gemfile*'
+  - 'requirements.txt'
+  - 'Pipfile*'
+
+# Documentation related changes
+area:docs:
+  - 'docs/**/*'
+  - '**/*.md'
+  - 'README*'
+  - 'CHANGELOG*'
+  - 'CONTRIBUTING*'
+  - 'LICENSE*'
+
+# Special label for documentation-only changes
+docs-only:
+  - all:
+      - 'docs/**/*'
+      - '**/*.md'
+      - 'README*'
+      - 'CHANGELOG*'
+      - 'CONTRIBUTING*'
