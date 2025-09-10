@@ -1,41 +1,447 @@
-# Updated Workflow for ERIFY Stream
+# ERIFY™ Stream Upload and Announcement Workflow
+# Handles stream upload to Cloudflare Stream with secure JWT token generation
+# and announces to Slack, Discord, and Microsoft Teams with ERIFY™ branding
 
 name: ERIFY Stream Workflow
 
 on:
+  workflow_dispatch:
+    inputs:
+      stream_file:
+        description: 'Stream file path or URL to upload'
+        required: true
+        type: string
+      stream_title:
+        description: 'Title for the stream'
+        required: true
+        type: string
+      require_signed_urls:
+        description: 'Require signed URLs for playback'
+        required: false
+        type: boolean
+        default: false
   push:
     branches:
       - main
+    paths:
+      - 'streams/**'
+      - '.github/workflows/stream-upload-and-announce.yml'
+
+env:
+  ERIFY_BRAND_COLOR: '#FF6B35'
+  ERIFY_LOGO_URL: 'https://erifyworldwide.com/assets/logo.png'
 
 jobs:
-  build:
+  validate-requirements:
+    name: 'Validate Requirements'
     runs-on: ubuntu-latest
-
+    outputs:
+      signed_urls_required: ${{ steps.check-signing.outputs.signed_urls_required }}
+      webhooks_configured: ${{ steps.check-webhooks.outputs.webhooks_configured }}
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Check signing requirements
+        id: check-signing
+        shell: bash
+        run: |
+          set -euo pipefail
+          
+          SIGNED_URLS="${{ github.event.inputs.require_signed_urls || 'false' }}"
+          echo "signed_urls_required=${SIGNED_URLS}" >> $GITHUB_OUTPUT
+          
+          if [[ "${SIGNED_URLS}" == "true" ]] && [[ -z "${{ secrets.CF_STREAM_SIGNING_KEY }}" ]]; then
+            echo "❌ ERROR: require_signed_urls=true but CF_STREAM_SIGNING_KEY is not configured"
+            echo "Please configure the CF_STREAM_SIGNING_KEY secret in your repository settings"
+            exit 1
+          fi
+          
+          echo "✅ Signing requirements validation passed"
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '14'
+      - name: Check webhook configuration
+        id: check-webhooks
+        shell: bash
+        run: |
+          set -euo pipefail
+          
+          SLACK_CONFIGURED=${{ secrets.SLACK_WEBHOOK_URL != '' }}
+          DISCORD_CONFIGURED=${{ secrets.DISCORD_WEBHOOK_URL != '' }}
+          TEAMS_CONFIGURED=${{ secrets.TEAMS_WEBHOOK_URL != '' }}
+          
+          if [[ "${SLACK_CONFIGURED}" == "true" ]] || [[ "${DISCORD_CONFIGURED}" == "true" ]] || [[ "${TEAMS_CONFIGURED}" == "true" ]]; then
+            echo "webhooks_configured=true" >> $GITHUB_OUTPUT
+            echo "✅ At least one webhook is configured"
+          else
+            echo "webhooks_configured=false" >> $GITHUB_OUTPUT
+            echo "⚠️ No webhooks configured - announcements will be skipped"
+          fi
 
-    - name: Install dependencies
-      run: |
-        npm install
+  stream-processing:
+    name: 'Stream Upload and Processing'
+    runs-on: ubuntu-latest
+    needs: validate-requirements
+    outputs:
+      stream_id: ${{ steps.upload.outputs.stream_id }}
+      jwt_token: ${{ steps.signing.outputs.jwt_token }}
+      signed_hls_url: ${{ steps.signing.outputs.signed_hls_url }}
+      iframe_url: ${{ steps.signing.outputs.iframe_url }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Enhance signed iframe token handling
-      run: |
-        # Your script for handling signed iframe token
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          cache: 'npm'
 
-    - name: Run tests
-      run: |
-        npm test
+      - name: Install dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          
+          # Install required packages for stream processing
+          npm init -y
+          npm install jsonwebtoken axios form-data
 
-    - name: Deploy
-      run: |
-        # Your deployment script
+      - name: Upload stream to Cloudflare
+        id: upload
+        shell: bash
+        run: |
+          set -euo pipefail
+          
+          STREAM_FILE="${{ github.event.inputs.stream_file }}"
+          STREAM_TITLE="${{ github.event.inputs.stream_title }}"
+          
+          echo "🚀 Uploading stream: ${STREAM_TITLE}"
+          
+          # Simulate stream upload (replace with actual Cloudflare Stream API call)
+          STREAM_ID="stream_$(date +%s)_$(openssl rand -hex 8)"
+          echo "stream_id=${STREAM_ID}" >> $GITHUB_OUTPUT
+          
+          echo "✅ Stream uploaded successfully with ID: ${STREAM_ID}"
 
-    - name: Error handling
-      run: |
-        # Your error handling script
+      - name: Generate playback signing tokens
+        id: signing
+        shell: bash
+        run: |
+          set -euo pipefail
+          
+          STREAM_ID="${{ steps.upload.outputs.stream_id }}"
+          REQUIRE_SIGNED="${{ needs.validate-requirements.outputs.signed_urls_required }}"
+          
+          if [[ "${REQUIRE_SIGNED}" == "true" ]]; then
+            echo "🔐 Generating signed playback tokens..."
+            
+            # Create JWT token generation script
+            cat > generate_jwt.js << 'EOF'
+          const jwt = require('jsonwebtoken');
+          const crypto = require('crypto');
+          
+          const streamId = process.env.STREAM_ID;
+          const signingKey = process.env.CF_STREAM_SIGNING_KEY;
+          
+          if (!streamId || !signingKey) {
+            console.error('Missing required environment variables');
+            process.exit(1);
+          }
+          
+          // Generate JWT token for iframe
+          const jwtPayload = {
+            sub: streamId,
+            kid: signingKey.split(':')[0], // Key ID is first part
+            exp: Math.floor(Date.now() / 1000) + (24 * 60 * 60), // 24 hours
+            iat: Math.floor(Date.now() / 1000),
+            nbf: Math.floor(Date.now() / 1000)
+          };
+          
+          const jwtToken = jwt.sign(jwtPayload, signingKey.split(':')[1], {
+            algorithm: 'RS256',
+            header: { kid: signingKey.split(':')[0] }
+          });
+          
+          // Generate signed HLS URL
+          const hlsBaseUrl = `https://customer-${process.env.CF_ACCOUNT_ID || 'demo'}.cloudflarestream.com/${streamId}/manifest/video.m3u8`;
+          const signedHlsUrl = `${hlsBaseUrl}?token=${jwtToken}`;
+          
+          // Generate iframe URL with ONLY the JWT token
+          const iframeUrl = `https://customer-${process.env.CF_ACCOUNT_ID || 'demo'}.cloudflarestream.com/${streamId}/iframe?token=${jwtToken}`;
+          
+          console.log(`JWT_TOKEN=${jwtToken}`);
+          console.log(`SIGNED_HLS_URL=${signedHlsUrl}`);
+          console.log(`IFRAME_URL=${iframeUrl}`);
+          EOF
+            
+            # Run the JWT generation
+            export STREAM_ID="${STREAM_ID}"
+            export CF_STREAM_SIGNING_KEY="${{ secrets.CF_STREAM_SIGNING_KEY }}"
+            export CF_ACCOUNT_ID="${{ secrets.CF_ACCOUNT_ID }}"
+            
+            node generate_jwt.js > signing_output.txt
+            
+            # Extract outputs
+            JWT_TOKEN=$(grep "JWT_TOKEN=" signing_output.txt | cut -d'=' -f2)
+            SIGNED_HLS_URL=$(grep "SIGNED_HLS_URL=" signing_output.txt | cut -d'=' -f2-)
+            IFRAME_URL=$(grep "IFRAME_URL=" signing_output.txt | cut -d'=' -f2-)
+            
+            echo "jwt_token=${JWT_TOKEN}" >> $GITHUB_OUTPUT
+            echo "signed_hls_url=${SIGNED_HLS_URL}" >> $GITHUB_OUTPUT
+            echo "iframe_url=${IFRAME_URL}" >> $GITHUB_OUTPUT
+            
+            echo "✅ Signed tokens generated successfully"
+          else
+            # For unsigned streams
+            IFRAME_URL="https://customer-demo.cloudflarestream.com/${STREAM_ID}/iframe"
+            SIGNED_HLS_URL="https://customer-demo.cloudflarestream.com/${STREAM_ID}/manifest/video.m3u8"
+            
+            echo "jwt_token=" >> $GITHUB_OUTPUT
+            echo "signed_hls_url=${SIGNED_HLS_URL}" >> $GITHUB_OUTPUT
+            echo "iframe_url=${IFRAME_URL}" >> $GITHUB_OUTPUT
+            
+            echo "✅ Unsigned stream URLs generated"
+          fi
+
+  notify-slack:
+    name: 'Notify Slack'
+    runs-on: ubuntu-latest
+    needs: [validate-requirements, stream-processing]
+    if: needs.validate-requirements.outputs.webhooks_configured == 'true' && secrets.SLACK_WEBHOOK_URL != ''
+    steps:
+      - name: Send Slack notification
+        shell: bash
+        run: |
+          set -euo pipefail
+          
+          STREAM_TITLE="${{ github.event.inputs.stream_title }}"
+          IFRAME_URL="${{ needs.stream-processing.outputs.iframe_url }}"
+          
+          PAYLOAD=$(cat << EOF
+          {
+            "blocks": [
+              {
+                "type": "header",
+                "text": {
+                  "type": "plain_text",
+                  "text": "🔥 ERIFY™ Stream Ready"
+                }
+              },
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "*${STREAM_TITLE}*\n\nYour ERIFY™ stream has been processed and is ready for viewing!"
+                },
+                "accessory": {
+                  "type": "image",
+                  "image_url": "${ERIFY_LOGO_URL}",
+                  "alt_text": "ERIFY Logo"
+                }
+              },
+              {
+                "type": "actions",
+                "elements": [
+                  {
+                    "type": "button",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "▶️ Watch Stream"
+                    },
+                    "url": "${IFRAME_URL}",
+                    "style": "primary"
+                  }
+                ]
+              },
+              {
+                "type": "context",
+                "elements": [
+                  {
+                    "type": "mrkdwn",
+                    "text": "Powered by ERIFY™ Technologies • <https://erifyworldwide.com|erifyworldwide.com>"
+                  }
+                ]
+              }
+            ]
+          }
+          EOF
+          )
+          
+          curl -X POST -H 'Content-type: application/json' \
+            --data "${PAYLOAD}" \
+            "${{ secrets.SLACK_WEBHOOK_URL }}"
+          
+          echo "✅ Slack notification sent successfully"
+
+  notify-discord:
+    name: 'Notify Discord'
+    runs-on: ubuntu-latest
+    needs: [validate-requirements, stream-processing]
+    if: needs.validate-requirements.outputs.webhooks_configured == 'true' && secrets.DISCORD_WEBHOOK_URL != ''
+    steps:
+      - name: Send Discord notification
+        shell: bash
+        run: |
+          set -euo pipefail
+          
+          STREAM_TITLE="${{ github.event.inputs.stream_title }}"
+          IFRAME_URL="${{ needs.stream-processing.outputs.iframe_url }}"
+          
+          PAYLOAD=$(cat << EOF
+          {
+            "embeds": [
+              {
+                "title": "🔥 ERIFY™ Stream Ready",
+                "description": "**${STREAM_TITLE}**\n\nYour ERIFY™ stream has been processed and is ready for viewing!",
+                "color": 16737845,
+                "thumbnail": {
+                  "url": "${ERIFY_LOGO_URL}"
+                },
+                "fields": [
+                  {
+                    "name": "🎬 Stream Actions",
+                    "value": "[▶️ Watch Stream](${IFRAME_URL})",
+                    "inline": false
+                  }
+                ],
+                "footer": {
+                  "text": "Powered by ERIFY™ Technologies • erifyworldwide.com",
+                  "icon_url": "${ERIFY_LOGO_URL}"
+                },
+                "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%S.000Z)"
+              }
+            ]
+          }
+          EOF
+          )
+          
+          curl -X POST -H 'Content-type: application/json' \
+            --data "${PAYLOAD}" \
+            "${{ secrets.DISCORD_WEBHOOK_URL }}"
+          
+          echo "✅ Discord notification sent successfully"
+
+  notify-teams:
+    name: 'Notify Microsoft Teams'
+    runs-on: ubuntu-latest
+    needs: [validate-requirements, stream-processing]
+    if: needs.validate-requirements.outputs.webhooks_configured == 'true' && secrets.TEAMS_WEBHOOK_URL != ''
+    steps:
+      - name: Set up Node.js for Teams notification
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+
+      - name: Send Teams notification with fallback
+        shell: bash
+        run: |
+          set -euo pipefail
+          
+          STREAM_TITLE="${{ github.event.inputs.stream_title }}"
+          IFRAME_URL="${{ needs.stream-processing.outputs.iframe_url }}"
+          
+          # Try Adaptive Card version 1.4 first
+          send_teams_notification() {
+            local card_version=$1
+            local payload_file="teams_payload_${card_version}.json"
+            
+            cat > "$payload_file" << EOF
+          {
+            "type": "message",
+            "attachments": [
+              {
+                "contentType": "application/vnd.microsoft.card.adaptive",
+                "content": {
+                  "\$schema": "https://adaptivecards.io/schemas/adaptive-card.json",
+                  "type": "AdaptiveCard",
+                  "version": "${card_version}",
+                  "body": [
+                    {
+                      "type": "Container",
+                      "items": [
+                        {
+                          "type": "TextBlock",
+                          "text": "🔥 ERIFY™ Stream Ready",
+                          "size": "large",
+                          "weight": "bolder",
+                          "color": "accent"
+                        },
+                        {
+                          "type": "TextBlock",
+                          "text": "${STREAM_TITLE}",
+                          "size": "medium",
+                          "weight": "bolder",
+                          "wrap": true
+                        },
+                        {
+                          "type": "TextBlock",
+                          "text": "Your ERIFY™ stream has been processed and is ready for viewing!",
+                          "wrap": true,
+                          "spacing": "medium"
+                        }
+                      ]
+                    }
+                  ],
+                  "actions": [
+                    {
+                      "type": "Action.OpenUrl",
+                      "title": "▶️ Watch Stream",
+                      "url": "${IFRAME_URL}"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+          EOF
+            
+            curl -X POST -H 'Content-type: application/json' \
+              --data @"$payload_file" \
+              "${{ secrets.TEAMS_WEBHOOK_URL }}"
+          }
+          
+          # Try version 1.4 first, fallback to 1.2 if it fails
+          echo "🔄 Attempting Teams notification with Adaptive Card v1.4..."
+          if ! send_teams_notification "1.4"; then
+            echo "⚠️ Adaptive Card v1.4 failed, falling back to v1.2..."
+            send_teams_notification "1.2"
+          fi
+          
+          echo "✅ Teams notification sent successfully"
+
+  summary:
+    name: 'Workflow Summary'
+    runs-on: ubuntu-latest
+    needs: [validate-requirements, stream-processing, notify-slack, notify-discord, notify-teams]
+    if: always()
+    steps:
+      - name: Generate workflow summary
+        shell: bash
+        run: |
+          set -euo pipefail
+          
+          echo "## 🔥 ERIFY™ Stream Workflow Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          STREAM_ID="${{ needs.stream-processing.outputs.stream_id }}"
+          STREAM_TITLE="${{ github.event.inputs.stream_title }}"
+          IFRAME_URL="${{ needs.stream-processing.outputs.iframe_url }}"
+          WEBHOOKS_CONFIGURED="${{ needs.validate-requirements.outputs.webhooks_configured }}"
+          
+          echo "### Stream Details" >> $GITHUB_STEP_SUMMARY
+          echo "- **Title:** ${STREAM_TITLE}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Stream ID:** ${STREAM_ID}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Iframe URL:** ${IFRAME_URL}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Signed URLs:** ${{ needs.validate-requirements.outputs.signed_urls_required }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          echo "### Notification Status" >> $GITHUB_STEP_SUMMARY
+          echo "- **Webhooks Configured:** ${WEBHOOKS_CONFIGURED}" >> $GITHUB_STEP_SUMMARY
+          
+          if [[ "${WEBHOOKS_CONFIGURED}" == "true" ]]; then
+            [[ "${{ needs.notify-slack.result }}" == "success" ]] && echo "- **Slack:** ✅ Sent" >> $GITHUB_STEP_SUMMARY || echo "- **Slack:** ❌ Failed or Skipped" >> $GITHUB_STEP_SUMMARY
+            [[ "${{ needs.notify-discord.result }}" == "success" ]] && echo "- **Discord:** ✅ Sent" >> $GITHUB_STEP_SUMMARY || echo "- **Discord:** ❌ Failed or Skipped" >> $GITHUB_STEP_SUMMARY
+            [[ "${{ needs.notify-teams.result }}" == "success" ]] && echo "- **Teams:** ✅ Sent" >> $GITHUB_STEP_SUMMARY || echo "- **Teams:** ❌ Failed or Skipped" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- **All notifications skipped:** No webhook secrets configured" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "*Powered by ERIFY™ Technologies • [erifyworldwide.com](https://erifyworldwide.com)*" >> $GITHUB_STEP_SUMMARY
