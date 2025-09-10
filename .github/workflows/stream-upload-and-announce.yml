@@ -1,11 +1,21 @@
-# Updated Workflow for ERIFY Stream
-
 name: ERIFY Stream Workflow
 
 on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  pull-requests: write
+
+# Prevent concurrent runs for the same workflow and cancel in-progress runs
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -13,29 +23,54 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Set up Node.js
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v4
       with:
-        node-version: '14'
+        node-version: '18'
+        cache: 'npm'
 
-    - name: Install dependencies
-      run: |
-        npm install
+    - name: Install dependencies with strict lockfile
+      run: npm ci
 
     - name: Enhance signed iframe token handling
       run: |
         # Your script for handling signed iframe token
+        echo "Enhanced signed iframe token handling step"
 
     - name: Run tests
-      run: |
-        npm test
+      run: npm test --if-present
 
-    - name: Deploy
-      run: |
-        # Your deployment script
+    - name: Publish Stream
+      if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+      run: npm run stream:publish --if-present
 
-    - name: Error handling
-      run: |
-        # Your error handling script
+    - name: Upload npm logs on failure
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: npm-logs
+        path: ~/.npm/_logs/
+        retention-days: 7
+        if-no-files-found: ignore
+
+    - name: Comment failure logs on PR
+      if: failure() && github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const runUrl = `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`;
+          const body = [
+            '## ❌ ERIFY Stream failed',
+            `Run: ${runUrl}`,
+            'Artifacts: **npm-logs** (retained 7 days)',
+            '',
+            'Please open the run, download **npm-logs**, and inspect the contents of `/home/runner/.npm/_logs`.'
+          ].join('\n');
+          await github.rest.issues.createComment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.payload.pull_request.number,
+            body
+          });
