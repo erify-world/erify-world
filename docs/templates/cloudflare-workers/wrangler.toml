@@ -1,0 +1,17 @@
+name = "erify-cron-workers"
+main = "src/worker.ts"
+compatibility_date = "2025-09-10"
+
+[triggers]
+crons = [
+  "*/5 * * * *",   # EE recently-updated
+  "6 2 * * *",     # Parties from EC
+  "23 23 * * *",   # Check current elections
+  "33 23 * * *"    # Mop up missed
+  # Minute-level tasks are not ideal on free plans; consider batching
+]
+
+[vars]
+BACKEND_BASE = "https://api.erify.example" # your backend
+# Create this in dashboard > Workers > KV/Vars or Secrets:
+# ERIFY_CRON_TOKEN (secret)
