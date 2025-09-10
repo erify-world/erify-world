@@ -20,6 +20,13 @@ Founder of **ERIFY™ Technologies** — building a global ecosystem of AI-power
 
 ---
 
+## 👑 **CI-QA Excellence**  
+- 📋 **[CI-QA Playbook Review Checklist](docs/CI-QA-Playbook-Review-Checklist.md)** → Crown-tier quality standards  
+- ✨ **[Quick Comment Checklist](docs/ci-qa-comment-checklist.md)** → Copy-paste ready for PR reviews  
+- 🛠 **[Checklist Helper Script](scripts/add-ci-qa-checklist.sh)** → Automated checklist deployment  
+
+---
+
 ## 🌍 Connect with Me  
 - 🌐 [erifyworldwide.com](https://erifyworldwide.com)  
 - 🐦 [X (Twitter): @erifyteam](https://x.com/erifyteam)  
