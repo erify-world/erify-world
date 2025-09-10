@@ -1,0 +1,18 @@
+name: ERIFY™ Smoke Test
+on: workflow_dispatch
+jobs:
+  alive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sanity echo
+        run: echo "ERIFY™ GitHub Actions are alive 🟢"
+      - name: Check key secrets (non-blocking)
+        run: |
+          missing=0
+          for s in CF_API_TOKEN CF_STREAM_SIGNING_KEY SLACK_WEBHOOK_URL DISCORD_WEBHOOK_URL TEAMS_WEBHOOK_URL; do
+            if [ -z "${{ secrets[s] || '' }}" ]; then
+              echo "::notice::Secret '$s' not set (ok for smoke)."
+            else
+              echo "✅ $s present"
+            fi
+          done
