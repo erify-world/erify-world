@@ -1,0 +1,46 @@
+name: ERIFY™ Smoke Test
+on: workflow_dispatch
+jobs:
+  alive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sanity echo
+        run: echo "ERIFY™ GitHub Actions are alive 🟢"
+      - name: Check key secrets (non-blocking)
+        run: |
+          missing=0
+          
+          # Check CF_API_TOKEN
+          if [ -z "${{ secrets.CF_API_TOKEN }}" ]; then
+            echo "::notice::Secret 'CF_API_TOKEN' not set (ok for smoke)."
+          else
+            echo "✅ CF_API_TOKEN present"
+          fi
+          
+          # Check CF_STREAM_SIGNING_KEY
+          if [ -z "${{ secrets.CF_STREAM_SIGNING_KEY }}" ]; then
+            echo "::notice::Secret 'CF_STREAM_SIGNING_KEY' not set (ok for smoke)."
+          else
+            echo "✅ CF_STREAM_SIGNING_KEY present"
+          fi
+          
+          # Check SLACK_WEBHOOK_URL
+          if [ -z "${{ secrets.SLACK_WEBHOOK_URL }}" ]; then
+            echo "::notice::Secret 'SLACK_WEBHOOK_URL' not set (ok for smoke)."
+          else
+            echo "✅ SLACK_WEBHOOK_URL present"
+          fi
+          
+          # Check DISCORD_WEBHOOK_URL
+          if [ -z "${{ secrets.DISCORD_WEBHOOK_URL }}" ]; then
+            echo "::notice::Secret 'DISCORD_WEBHOOK_URL' not set (ok for smoke)."
+          else
+            echo "✅ DISCORD_WEBHOOK_URL present"
+          fi
+          
+          # Check TEAMS_WEBHOOK_URL
+          if [ -z "${{ secrets.TEAMS_WEBHOOK_URL }}" ]; then
+            echo "::notice::Secret 'TEAMS_WEBHOOK_URL' not set (ok for smoke)."
+          else
+            echo "✅ TEAMS_WEBHOOK_URL present"
+          fi
