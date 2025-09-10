@@ -1,7 +1,7 @@
 ---
 name: 🎬 ERIFY Stream Upload & Announce
 
-on:
+"on":
   workflow_dispatch:
     inputs:
       upload_type:
