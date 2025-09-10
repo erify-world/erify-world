@@ -1,0 +1,55 @@
+---
+name: 🟢 ERIFY™ Smoke Test Review
+
+on:
+  pull_request:
+    types: [opened, reopened, ready_for_review, synchronize]
+    paths:
+      - '.github/workflows/*smoke-test*.yml'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  add-smoke-test-checklist:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Add ERIFY™ Smoke Test Review Checklist
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const pr = context.payload.pull_request;
+            
+            // Read checklist content from file
+            const checklistContent = fs.readFileSync('.github/PULL_REQUEST_TEMPLATE/erify-smoke-test-review-checklist.md', 'utf8');
+            
+            // Check if checklist comment already exists
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr.number
+            });
+
+            const checklistExists = comments.data.some(comment =>
+              comment.body.includes('🟢 ERIFY™ Smoke Test Review Checklist')
+            );
+
+            if (!checklistExists) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr.number,
+                body: checklistContent
+              });
+
+              core.info('Added ERIFY™ Smoke Test Review Checklist to PR #' + pr.number);
+            } else {
+              core.info('ERIFY™ Smoke Test Review Checklist already exists on PR #' + pr.number);
+            }

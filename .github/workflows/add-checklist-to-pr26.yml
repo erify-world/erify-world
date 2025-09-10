@@ -1,0 +1,56 @@
+---
+name: 🎯 Add Checklist to PR #26
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR number to add checklist to'
+        required: true
+        default: '26'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  add-checklist-to-specific-pr:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Add ERIFY™ Smoke Test Review Checklist to Specific PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const prNumber = parseInt('${{ github.event.inputs.pr_number }}');
+            
+            // Read checklist content from file
+            const checklistContent = fs.readFileSync('.github/PULL_REQUEST_TEMPLATE/erify-smoke-test-review-checklist.md', 'utf8');
+            
+            // Check if checklist comment already exists
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber
+            });
+            
+            const checklistExists = comments.data.some(comment =>
+              comment.body.includes('🟢 ERIFY™ Smoke Test Review Checklist')
+            );
+            
+            if (!checklistExists) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body: checklistContent
+              });
+              
+              core.info(`✅ Added ERIFY™ Smoke Test Review Checklist to PR #${prNumber}`);
+            } else {
+              core.info(`ℹ️ ERIFY™ Smoke Test Review Checklist already exists on PR #${prNumber}`);
+            }
