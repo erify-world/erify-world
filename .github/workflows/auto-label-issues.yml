@@ -1,0 +1,137 @@
+---
+name: 🏷️ Auto Label Issues
+
+on:
+  issues:
+    types: [opened, edited]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  auto-label-issues:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Apply keyword-based labels to issues
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+            const title = issue.title.toLowerCase();
+            const body = (issue.body || '').toLowerCase();
+            const combined = `${title} ${body}`;
+            
+            const labels = [];
+            
+            // Bug detection
+            if (combined.includes('bug') || combined.includes('error') || 
+                combined.includes('broken') || combined.includes('fix') ||
+                combined.includes('issue') || combined.includes('problem')) {
+              labels.push('bug');
+            }
+            
+            // Feature request detection
+            if (combined.includes('feature') || combined.includes('enhancement') || 
+                combined.includes('request') || combined.includes('improvement') ||
+                combined.includes('add') || combined.includes('new')) {
+              labels.push('enhancement');
+            }
+            
+            // Documentation detection
+            if (combined.includes('docs') || combined.includes('documentation') || 
+                combined.includes('readme') || combined.includes('guide') ||
+                combined.includes('tutorial') || combined.includes('example')) {
+              labels.push('type: docs');
+            }
+            
+            // Question detection
+            if (combined.includes('question') || combined.includes('how to') || 
+                combined.includes('help') || combined.includes('support') ||
+                title.includes('?')) {
+              labels.push('question');
+            }
+            
+            // Good first issue detection
+            if (combined.includes('good first issue') || combined.includes('beginner') || 
+                combined.includes('easy') || combined.includes('starter') ||
+                combined.includes('newcomer')) {
+              labels.push('good first issue');
+            }
+            
+            // Help wanted detection
+            if (combined.includes('help wanted') || combined.includes('help needed') || 
+                combined.includes('assistance') || combined.includes('community')) {
+              labels.push('help wanted');
+            }
+            
+            // Priority detection
+            if (combined.includes('urgent') || combined.includes('critical') || 
+                combined.includes('important') || combined.includes('asap') ||
+                combined.includes('blocking')) {
+              labels.push('priority: high');
+            }
+            
+            // Area-specific detection
+            if (combined.includes('frontend') || combined.includes('ui') || 
+                combined.includes('interface') || combined.includes('design')) {
+              labels.push('area: frontend');
+            }
+            
+            if (combined.includes('backend') || combined.includes('api') || 
+                combined.includes('server') || combined.includes('database')) {
+              labels.push('area: backend');
+            }
+            
+            if (combined.includes('ci') || combined.includes('workflow') || 
+                combined.includes('github actions') || combined.includes('deployment')) {
+              labels.push('area: ci');
+            }
+            
+            if (combined.includes('stream') || combined.includes('video') || 
+                combined.includes('media') || combined.includes('cloudflare')) {
+              labels.push('area: stream');
+            }
+            
+            if (combined.includes('infrastructure') || combined.includes('infra') || 
+                combined.includes('deployment') || combined.includes('hosting')) {
+              labels.push('area: infra');
+            }
+            
+            // Type detection
+            if (combined.includes('chore') || combined.includes('maintenance') || 
+                combined.includes('cleanup') || combined.includes('refactor')) {
+              labels.push('type: chore');
+            }
+            
+            // Apply labels if any were found
+            if (labels.length > 0) {
+              try {
+                await github.rest.issues.addLabels({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issue.number,
+                  labels: labels
+                });
+                console.log(`Applied labels to issue #${issue.number}: ${labels.join(', ')}`);
+              } catch (e) {
+                console.log(`Warning: Could not apply some labels: ${e.message}`);
+                // Try to create missing labels
+                for (const label of labels) {
+                  try {
+                    await github.rest.issues.getLabel({
+                      owner: context.repo.owner,
+                      repo: context.repo.repo,
+                      name: label
+                    });
+                  } catch (labelError) {
+                    if (labelError.status === 404) {
+                      console.log(`Label "${label}" doesn't exist - consider creating it`);
+                    }
+                  }
+                }
+              }
+            } else {
+              console.log(`No matching labels found for issue #${issue.number}`);
+            }

@@ -1,0 +1,89 @@
+# Auto-labeler configuration for ERIFY™ World
+# This file defines path-based labeling rules for pull requests
+
+# Documentation
+'type: docs':
+  - '**/*.md'
+  - 'docs/**/*'
+  - 'README*'
+  - 'CHANGELOG*'
+  - 'LICENSE*'
+  - '*.md'
+
+# Frontend/UI
+'area: frontend':
+  - 'components/**/*'
+  - 'styles/**/*'
+  - 'styleguide/**/*'
+  - '**/*.css'
+  - '**/*.scss'
+  - '**/*.html'
+  - '**/*.js'
+  - '**/*.ts'
+  - '**/*.jsx'
+  - '**/*.tsx'
+  - '**/*.vue'
+
+# CI/Workflows
+'area: ci':
+  - '.github/**/*'
+  - '**/.github/**/*'
+  - '**/*.yml'
+  - '**/*.yaml'
+  - 'Dockerfile*'
+  - 'docker-compose*'
+  - '.dockerignore'
+
+# Infrastructure
+'area: infra':
+  - 'terraform/**/*'
+  - 'infrastructure/**/*'
+  - 'deploy/**/*'
+  - 'k8s/**/*'
+  - 'kubernetes/**/*'
+  - '**/*.tf'
+  - '**/*.tfvars'
+
+# Backend/API
+'area: backend':
+  - 'api/**/*'
+  - 'backend/**/*'
+  - 'server/**/*'
+  - 'src/**/*'
+  - 'lib/**/*'
+  - '**/*.py'
+  - '**/*.go'
+  - '**/*.java'
+  - '**/*.php'
+  - '**/*.rb'
+  - '**/*.rs'
+
+# Cloudflare Stream
+'area: stream':
+  - '**/*stream*'
+  - '**/*video*'
+  - '**/*media*'
+  - 'stream/**/*'
+  - 'media/**/*'
+
+# Configuration/Chores
+'type: chore':
+  - '.gitignore'
+  - '.gitattributes'
+  - '**/.env*'
+  - '**/package.json'
+  - '**/package-lock.json'
+  - '**/yarn.lock'
+  - '**/composer.json'
+  - '**/requirements.txt'
+  - '**/Gemfile*'
+  - '**/go.mod'
+  - '**/go.sum'
+  - '**/.editorconfig'
+  - '**/.eslintrc*'
+  - '**/.prettierrc*'
+  - '**/tsconfig.json'
+  - '**/babel.config*'
+  - '**/webpack.config*'
+  - '**/rollup.config*'
+  - '**/vite.config*'
