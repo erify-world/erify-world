@@ -1,0 +1,342 @@
+/**
+ * ERIFY™ Luxury Typography & Code Theme
+ * Elegant, professional typography for premium documentation
+ */
+
+/* === LUXURY FONTS === */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&display=swap');
+
+/* === ROOT VARIABLES === */
+:root {
+  /* Typography Scale */
+  --erify-font-family-base: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --erify-font-family-mono: 'JetBrains Mono', 'SF Mono', Monaco, Inconsolata, 'Roboto Mono', 'Droid Sans Mono', 'Courier New', monospace;
+  
+  /* Luxury Color Palette */
+  --erify-gold: #D4AF37;
+  --erify-gold-light: #F4E4A6;
+  --erify-gold-dark: #B8941F;
+  --erify-midnight: #0A0A0A;
+  --erify-charcoal: #1A1A1A;
+  --erify-slate: #2A2A2A;
+  --erify-silver: #E8E8E8;
+  --erify-platinum: #F5F5F5;
+  
+  /* Typography Weights */
+  --erify-font-weight-light: 300;
+  --erify-font-weight-normal: 400;
+  --erify-font-weight-medium: 500;
+  --erify-font-weight-semibold: 600;
+  --erify-font-weight-bold: 700;
+  
+  /* Spacing & Layout */
+  --erify-line-height-tight: 1.25;
+  --erify-line-height-normal: 1.5;
+  --erify-line-height-relaxed: 1.75;
+  --erify-letter-spacing-tight: -0.025em;
+  --erify-letter-spacing-normal: 0;
+  --erify-letter-spacing-wide: 0.025em;
+}
+
+/* === DARK THEME OVERRIDES === */
+[data-theme='dark'] {
+  --erify-gold: #F4E4A6;
+  --erify-gold-light: #FFFBEB;
+  --erify-gold-dark: #D4AF37;
+}
+
+/* === BASE TYPOGRAPHY === */
+html {
+  font-family: var(--erify-font-family-base);
+  font-weight: var(--erify-font-weight-normal);
+  line-height: var(--erify-line-height-normal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* === HEADINGS === */
+h1, h2, h3, h4, h5, h6,
+.markdown h1, .markdown h2, .markdown h3, .markdown h4, .markdown h5, .markdown h6 {
+  font-family: var(--erify-font-family-base);
+  font-weight: var(--erify-font-weight-semibold);
+  line-height: var(--erify-line-height-tight);
+  letter-spacing: var(--erify-letter-spacing-tight);
+  margin-bottom: 0.75rem;
+}
+
+h1, .markdown h1 {
+  font-weight: var(--erify-font-weight-bold);
+  font-size: 2.5rem;
+  background: linear-gradient(135deg, var(--erify-gold), var(--erify-gold-dark));
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 1rem;
+}
+
+h2, .markdown h2 {
+  font-size: 2rem;
+  color: var(--ifm-heading-color);
+  border-bottom: 2px solid var(--erify-gold);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+h3, .markdown h3 {
+  font-size: 1.5rem;
+  color: var(--erify-gold);
+}
+
+h4, .markdown h4 {
+  font-size: 1.25rem;
+  font-weight: var(--erify-font-weight-medium);
+}
+
+h5, .markdown h5 {
+  font-size: 1.1rem;
+  font-weight: var(--erify-font-weight-medium);
+}
+
+h6, .markdown h6 {
+  font-size: 1rem;
+  font-weight: var(--erify-font-weight-medium);
+  text-transform: uppercase;
+  letter-spacing: var(--erify-letter-spacing-wide);
+}
+
+/* === PARAGRAPHS & TEXT === */
+p, .markdown p {
+  line-height: var(--erify-line-height-relaxed);
+  margin-bottom: 1rem;
+}
+
+/* === CODE BLOCKS === */
+code, pre, .token {
+  font-family: var(--erify-font-family-mono);
+  font-weight: var(--erify-font-weight-normal);
+}
+
+/* Inline Code */
+code:not([class*="language-"]) {
+  background: rgba(212, 175, 55, 0.1);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 4px;
+  padding: 0.15em 0.4em;
+  color: var(--erify-gold-dark);
+  font-size: 0.875em;
+  font-weight: var(--erify-font-weight-medium);
+}
+
+[data-theme='dark'] code:not([class*="language-"]) {
+  background: rgba(244, 228, 166, 0.1);
+  border-color: rgba(244, 228, 166, 0.2);
+  color: var(--erify-gold-light);
+}
+
+/* Code Block Container */
+.prism-code, pre[class*="language-"] {
+  background: var(--erify-midnight) !important;
+  border: 1px solid var(--erify-charcoal);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  margin: 1.5rem 0;
+  overflow-x: auto;
+}
+
+[data-theme='dark'] .prism-code,
+[data-theme='dark'] pre[class*="language-"] {
+  background: var(--erify-charcoal) !important;
+  border-color: var(--erify-slate);
+}
+
+/* Code Block Header */
+.codeBlockTitle_Ktv7 {
+  background: var(--erify-gold);
+  color: var(--erify-midnight);
+  font-family: var(--erify-font-family-mono);
+  font-weight: var(--erify-font-weight-semibold);
+  font-size: 0.8rem;
+  letter-spacing: var(--erify-letter-spacing-wide);
+  text-transform: uppercase;
+  padding: 0.5rem 1rem;
+  border-radius: 8px 8px 0 0;
+  margin-bottom: 0;
+}
+
+/* Code Line Numbers */
+.codeBlockLinesWithNumbering_o6Pm .codeBlockLines_e6Vv {
+  padding-left: 3rem;
+}
+
+.codeBlockLines_e6Vv::before {
+  background: var(--erify-charcoal);
+  border-right: 1px solid var(--erify-slate);
+  color: var(--erify-gold);
+  font-family: var(--erify-font-family-mono);
+  font-size: 0.8rem;
+}
+
+/* === BLOCKQUOTES === */
+blockquote {
+  border-left: 4px solid var(--erify-gold);
+  background: rgba(212, 175, 55, 0.05);
+  padding: 1rem 1.5rem;
+  margin: 1.5rem 0;
+  font-style: italic;
+  position: relative;
+}
+
+blockquote::before {
+  content: '"';
+  font-size: 3rem;
+  color: var(--erify-gold);
+  position: absolute;
+  top: -0.5rem;
+  left: 0.5rem;
+  line-height: 1;
+  font-family: serif;
+}
+
+/* === LINKS === */
+a {
+  color: var(--erify-gold);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+a:hover {
+  color: var(--erify-gold-dark);
+  text-decoration: underline;
+}
+
+[data-theme='dark'] a:hover {
+  color: var(--erify-gold-light);
+}
+
+/* === TABLES === */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.5rem 0;
+  border: 1px solid var(--erify-gold);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+thead {
+  background: var(--erify-gold);
+  color: var(--erify-midnight);
+}
+
+th, td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+th {
+  font-weight: var(--erify-font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--erify-letter-spacing-wide);
+  font-size: 0.875rem;
+}
+
+tbody tr:hover {
+  background: rgba(212, 175, 55, 0.05);
+}
+
+/* === LISTS === */
+ul, ol {
+  line-height: var(--erify-line-height-relaxed);
+}
+
+li::marker {
+  color: var(--erify-gold);
+}
+
+/* === BADGES & LABELS === */
+.badge {
+  background: var(--erify-gold);
+  color: var(--erify-midnight);
+  font-family: var(--erify-font-family-mono);
+  font-weight: var(--erify-font-weight-semibold);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: var(--erify-letter-spacing-wide);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+}
+
+/* === LUXURY ADMONITIONS === */
+.admonition {
+  border-radius: 8px;
+  border: 1px solid;
+  margin: 1.5rem 0;
+  overflow: hidden;
+}
+
+.admonition-icon svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.admonition.admonition-tip {
+  border-color: var(--erify-gold);
+}
+
+.admonition.admonition-tip .admonition-heading {
+  background: linear-gradient(135deg, var(--erify-gold), var(--erify-gold-dark));
+  color: var(--erify-midnight);
+}
+
+/* === RESPONSIVE TYPOGRAPHY === */
+@media (max-width: 768px) {
+  h1, .markdown h1 {
+    font-size: 2rem;
+  }
+  
+  h2, .markdown h2 {
+    font-size: 1.5rem;
+  }
+  
+  h3, .markdown h3 {
+    font-size: 1.25rem;
+  }
+}
+
+/* === LUXURY SCROLLBAR === */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--erify-charcoal);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--erify-gold);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--erify-gold-dark);
+}
+
+/* === FOCUS STATES === */
+*:focus {
+  outline: 2px solid var(--erify-gold);
+  outline-offset: 2px;
+}
+
+/* === SELECTION === */
+::selection {
+  background: var(--erify-gold);
+  color: var(--erify-midnight);
+}
+
+::-moz-selection {
+  background: var(--erify-gold);
+  color: var(--erify-midnight);
+}
