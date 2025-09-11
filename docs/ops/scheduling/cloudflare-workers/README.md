@@ -1,6 +1,8 @@
 # Cloudflare Workers Cron Template
 
-Workers can't run your local Django commands. Pattern: expose internal secure HTTP endpoints (in your Django/Backend) and have Workers call them on schedule with a secret token. This keeps the serverless scheduler + your existing app logic.
+Workers can't run your local Django commands. Pattern: expose internal secure HTTP endpoints (in
+your Django/Backend) and have Workers call them on schedule with a secret token. This keeps the
+serverless scheduler + your existing app logic.
 
 ## Files
 
@@ -46,11 +48,11 @@ You'll need to create secure HTTP endpoints in your Django backend that correspo
 
 ### URL Mapping
 
-| Worker Path | Django Management Command |
-|-------------|---------------------------|
-| `POST /cron/ee-recent` | `manage.py uk_create_elections_from_every_election --recently-updated` |
-| `POST /cron/parties-import` | `manage.py parties_import_from_ec --post-to-slack` |
-| `POST /cron/check-current` | `manage.py uk_create_elections_from_every_election --check-current` |
+| Worker Path                      | Django Management Command                                                                          |
+| -------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `POST /cron/ee-recent`           | `manage.py uk_create_elections_from_every_election --recently-updated`                             |
+| `POST /cron/parties-import`      | `manage.py parties_import_from_ec --post-to-slack`                                                 |
+| `POST /cron/check-current`       | `manage.py uk_create_elections_from_every_election --check-current`                                |
 | `POST /cron/mop-recent?delta=25` | `manage.py uk_create_elections_from_every_election --recently-updated --recently-updated-delta 25` |
 
 ### Django Views Example
@@ -70,7 +72,7 @@ def cron_ee_recent(request):
     auth_header = request.headers.get('Authorization', '')
     if not auth_header.startswith('Bearer ') or auth_header[7:] != settings.ERIFY_CRON_TOKEN:
         return JsonResponse({'error': 'Unauthorized'}, status=401)
-    
+
     try:
         # Run management command asynchronously (consider using Celery)
         call_command('uk_create_elections_from_every_election', recently_updated=True)
@@ -92,6 +94,7 @@ def cron_ee_recent(request):
 ### Cloudflare Dashboard
 
 Monitor your Workers in the Cloudflare dashboard:
+
 - View execution logs
 - Monitor request patterns
 - Check error rates
@@ -103,18 +106,18 @@ Monitor your Workers in the Cloudflare dashboard:
 export default {
   async scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionContext) {
     // ... existing code ...
-    
+
     // Custom analytics
     ctx.waitUntil(
       fetch('https://analytics.example.com/cron-heartbeat', {
         method: 'POST',
         body: JSON.stringify({
           timestamp: event.scheduledTime,
-          worker: 'erify-cron'
-        })
+          worker: 'erify-cron',
+        }),
       })
     );
-  }
+  },
 };
 ```
 
@@ -128,7 +131,8 @@ export default {
 
 ### Minute-Level Tasks
 
-Consider consolidating "every minute" jobs (images/SOPN parse) into every 5–15 minutes or keep them on a VM/Container with node-cron/PM2 for high frequency.
+Consider consolidating "every minute" jobs (images/SOPN parse) into every 5–15 minutes or keep them
+on a VM/Container with node-cron/PM2 for high frequency.
 
 ### Alternative: Hybrid Approach
 
