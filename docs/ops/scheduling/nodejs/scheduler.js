@@ -17,8 +17,11 @@ const MAILTO = process.env.MAILTO || ''; // optional (for log routing)
 // helper to run commands (with optional nice/ionice)
 async function runManage(cmdArgs, { nice = false, flockKey = null } = {}) {
   const base = [MANAGE, ...cmdArgs];
-  const args = (nice && USE_NICE) ? ['-n','19','ionice','-c','3', PYTHON, ...base] : [PYTHON, ...base];
-  const bin = (nice && USE_NICE) ? 'nice' : PYTHON;
+  const args =
+    nice && USE_NICE
+      ? ['-n', '19', 'ionice', '-c', '3', PYTHON, ...base]
+      : [PYTHON, ...base];
+  const bin = nice && USE_NICE ? 'nice' : PYTHON;
 
   const run = async () => {
     const { stdout, stderr } = await execa(bin, args, { env: process.env });
@@ -38,7 +41,11 @@ async function runManage(cmdArgs, { nice = false, flockKey = null } = {}) {
     return log.info({ flockKey }, 'Skipped: lock held');
   }
 
-  try { await run(); } finally { await release(); }
+  try {
+    await run();
+  } finally {
+    await release();
+  }
 }
 
 // ---- Schedules ----
@@ -73,7 +80,8 @@ cron.schedule('33 23 * * *', () =>
   runManage([
     'uk_create_elections_from_every_election',
     '--recently-updated',
-    '--recently-updated-delta', '25'
+    '--recently-updated-delta',
+    '25',
   ])
 );
 

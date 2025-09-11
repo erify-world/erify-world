@@ -22,23 +22,24 @@
 
 ## 🎨 2. Color Palette
 
-| Name          | Token                | Hex       | Usage                          |
-|---------------|----------------------|-----------|--------------------------------|
-| Diamond Blue  | `--erify-blue`       | #19CCFA   | Primary accent, glow           |
-| Blue Electric | `--erify-blue-electric`| #11C9FF | Focus ring, inner halo         |
-| Flame Orange  | `--erify-orange`     | #DE760B   | Secondary accent, CTA          |
-| Orange Warm   | `--erify-orange-warm`| #FF8A1A   | CTA glow, play halo            |
-| Black         | `--erify-black`      | #0A0B0C   | App background                 |
-| Elevation 1   | `--erify-elev-1`     | #111315   | Card/surfaces                  |
-| Elevation 2   | `--erify-elev-2`     | #171A1D   | Hovered/card overlay           |
-| Text          | `--erify-text`       | #EEF2F6   | Main text                      |
-| Muted Text    | `--erify-text-muted` | #9BA7B4   | Secondary text                 |
-| Success       | `--erify-success`    | #2ECC71   | Success state                  |
-| Warning       | `--erify-warning`    | #F39C12   | Warning                        |
-| Danger        | `--erify-danger`     | #E63946   | Error/destructive              |
+| Name          | Token                   | Hex     | Usage                  |
+| ------------- | ----------------------- | ------- | ---------------------- |
+| Diamond Blue  | `--erify-blue`          | #19CCFA | Primary accent, glow   |
+| Blue Electric | `--erify-blue-electric` | #11C9FF | Focus ring, inner halo |
+| Flame Orange  | `--erify-orange`        | #DE760B | Secondary accent, CTA  |
+| Orange Warm   | `--erify-orange-warm`   | #FF8A1A | CTA glow, play halo    |
+| Black         | `--erify-black`         | #0A0B0C | App background         |
+| Elevation 1   | `--erify-elev-1`        | #111315 | Card/surfaces          |
+| Elevation 2   | `--erify-elev-2`        | #171A1D | Hovered/card overlay   |
+| Text          | `--erify-text`          | #EEF2F6 | Main text              |
+| Muted Text    | `--erify-text-muted`    | #9BA7B4 | Secondary text         |
+| Success       | `--erify-success`       | #2ECC71 | Success state          |
+| Warning       | `--erify-warning`       | #F39C12 | Warning                |
+| Danger        | `--erify-danger`        | #E63946 | Error/destructive      |
 
-**Gradients**  
-- Diamond edge: `linear-gradient(135deg, #0AA0D1 0%, #19CCFA 50%, #3DE6FF 100%)`  
+**Gradients**
+
+- Diamond edge: `linear-gradient(135deg, #0AA0D1 0%, #19CCFA 50%, #3DE6FF 100%)`
 - Flame edge: `linear-gradient(135deg, #DE760B 0%, #FF8A1A 60%, #FFC06A 100%)`
 
 ---
@@ -46,8 +47,8 @@
 ## ✨ 3. Glow System
 
 - **L1 (Subtle):** `0 0 10px 2px var(--erify-blue)`
-- **L2 (CTA):**   `0 0 18px 4px var(--erify-blue), 0 0 28px 10px var(--erify-orange-warm)`
-- **L3 (Hero):**  `0 0 30px 6px var(--erify-blue-electric), 0 0 60px 24px var(--erify-orange-warm)`
+- **L2 (CTA):** `0 0 18px 4px var(--erify-blue), 0 0 28px 10px var(--erify-orange-warm)`
+- **L3 (Hero):** `0 0 30px 6px var(--erify-blue-electric), 0 0 60px 24px var(--erify-orange-warm)`
 
 Use glows to draw attention (buttons, play CTA, focus), never as a background.
 
@@ -55,8 +56,8 @@ Use glows to draw attention (buttons, play CTA, focus), never as a background.
 
 ## 🅰️ 4. Typography
 
-- **Primary:** Neue Haas Grotesk Display / Gilroy (web license).  
-- **Fallback:** Inter, system-ui  
+- **Primary:** Neue Haas Grotesk Display / Gilroy (web license).
+- **Fallback:** Inter, system-ui
 - **Scale:**
   - Display: 34–42px / 700
   - H1: 28px / 700
@@ -122,10 +123,10 @@ Use glows to draw attention (buttons, play CTA, focus), never as a background.
 
 ## 🏷️ 9. GitHub Label Colors
 
-- feature:   `#19CCFA`
-- bug:       `#E63946`
-- design:    `#FF8A1A`
-- docs:      `#9BA7B4`
+- feature: `#19CCFA`
+- bug: `#E63946`
+- design: `#FF8A1A`
+- docs: `#9BA7B4`
 - good first issue: `#2ECC71`
 
 ---
@@ -133,21 +134,24 @@ Use glows to draw attention (buttons, play CTA, focus), never as a background.
 ## 🧩 10. Usage Examples
 
 ### Play button
+
 ```html
 <button class="btn-play" aria-label="Play">
-  <svg width="22" height="22"><path fill="currentColor" d="M8 5v14l11-7z"/></svg>
+  <svg width="22" height="22"><path fill="currentColor" d="M8 5v14l11-7z" /></svg>
 </button>
 ```
 
 ### Glow primary button
+
 ```html
 <button class="btn btn--glow">Post</button>
 ```
 
 ### Media card
+
 ```html
 <article class="card card--glow">
-  <img class="card__cover" src="cover.jpg" alt="Album cover">
+  <img class="card__cover" src="cover.jpg" alt="Album cover" />
   <div class="card__body">
     <h3 class="card__title">Exclusive Drop – Luxury Playlist</h3>
     <p class="card__subtitle">by ARTIST</p>

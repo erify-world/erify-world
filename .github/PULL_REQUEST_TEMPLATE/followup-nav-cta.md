@@ -1,6 +1,7 @@
 # ✨ Follow-Up PR — Finalize Bottom Nav & CTA Glow
 
 ## 💎 Changelog
+
 - Replaced placeholder anchors with finalized IDs
 - Integrated final SVG icon set for bottom navigation
 - Verified hover/active glow states using Glow Kit
@@ -10,6 +11,7 @@
 ---
 
 ## 🧪 Testing Notes
+
 - [ ] Test nav scroll on **mobile Safari + Chrome** (safe-area insets respected)
 - [ ] Confirm **desktop hover/focus glow** on nav icons
 - [ ] Verify **CTA glow button** styling & focus state
@@ -19,6 +21,7 @@
 ---
 
 ## ✅ Ready-to-Merge Checklist
+
 - [ ] Anchors wired and scroll correctly on all devices
 - [ ] SVGs render crisp at 1×/2×, inherit `currentColor`
 - [ ] Mobile nav safe-area / z-index verified
@@ -29,4 +32,5 @@
 ---
 
 ## 🔗 Related
+
 Closes: #<follow-up-issue-id>

@@ -1,215 +1,242 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ERIFY™ Visual Slide</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ERIFY™ Visual Slide</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-    body {
-      font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
-      background-color: #1A1D23;
-      color: #EEF2F6;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      padding: 60px 80px;
-      line-height: 1.6;
-    }
-
-    .slide-container {
-      max-width: 1200px;
-      width: 100%;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-      justify-content: space-between;
-    }
-
-    .logo-section {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 80px;
-    }
-
-    .logo {
-      width: 200px;
-      height: auto;
-    }
-
-    .logo-fallback {
-      font-size: 3rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, #19CCFA 0%, #DE760B 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      text-align: center;
-      letter-spacing: 0.1em;
-      display: none;
-    }
-
-    .content-section {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 60px;
-    }
-
-    .attribution-template {
-      text-align: center;
-      margin-bottom: 40px;
-    }
-
-    .attribution-title {
-      font-size: 2.5rem;
-      font-weight: 700;
-      color: #19CCFA;
-      margin-bottom: 20px;
-      letter-spacing: -0.02em;
-    }
-
-    .attribution-text {
-      font-size: 1.25rem;
-      font-weight: 400;
-      color: #9BA7B4;
-      max-width: 800px;
-      margin: 0 auto;
-      line-height: 1.7;
-    }
-
-    .why-matters-section {
-      margin-top: 60px;
-    }
-
-    .why-matters-title {
-      font-size: 2rem;
-      font-weight: 600;
-      color: #DE760B;
-      margin-bottom: 40px;
-      text-align: center;
-    }
-
-    .bullet-points {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 30px;
-      max-width: 1000px;
-      margin: 0 auto;
-    }
-
-    .bullet-point {
-      display: flex;
-      align-items: flex-start;
-      gap: 15px;
-      padding: 20px;
-      background: rgba(255, 255, 255, 0.02);
-      border-radius: 12px;
-      border: 1px solid rgba(25, 204, 250, 0.1);
-    }
-
-    .bullet-icon {
-      width: 8px;
-      height: 8px;
-      background: linear-gradient(135deg, #19CCFA 0%, #DE760B 100%);
-      border-radius: 50%;
-      margin-top: 8px;
-      flex-shrink: 0;
-    }
-
-    .bullet-text {
-      font-size: 1.1rem;
-      font-weight: 500;
-      color: #EEF2F6;
-      line-height: 1.6;
-    }
-
-    @media (max-width: 768px) {
       body {
-        padding: 40px 20px;
+        font-family:
+          'Montserrat',
+          -apple-system,
+          BlinkMacSystemFont,
+          'Segoe UI',
+          'Roboto',
+          'Helvetica Neue',
+          Arial,
+          sans-serif;
+        background-color: #1a1d23;
+        color: #eef2f6;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        padding: 60px 80px;
+        line-height: 1.6;
+      }
+
+      .slide-container {
+        max-width: 1200px;
+        width: 100%;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        justify-content: space-between;
+      }
+
+      .logo-section {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 80px;
+      }
+
+      .logo {
+        width: 200px;
+        height: auto;
+      }
+
+      .logo-fallback {
+        font-size: 3rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #19ccfa 0%, #de760b 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-align: center;
+        letter-spacing: 0.1em;
+        display: none;
+      }
+
+      .content-section {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 60px;
+      }
+
+      .attribution-template {
+        text-align: center;
+        margin-bottom: 40px;
       }
 
       .attribution-title {
-        font-size: 2rem;
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #19ccfa;
+        margin-bottom: 20px;
+        letter-spacing: -0.02em;
       }
 
       .attribution-text {
-        font-size: 1.1rem;
+        font-size: 1.25rem;
+        font-weight: 400;
+        color: #9ba7b4;
+        max-width: 800px;
+        margin: 0 auto;
+        line-height: 1.7;
+      }
+
+      .why-matters-section {
+        margin-top: 60px;
       }
 
       .why-matters-title {
-        font-size: 1.75rem;
+        font-size: 2rem;
+        font-weight: 600;
+        color: #de760b;
+        margin-bottom: 40px;
+        text-align: center;
       }
 
       .bullet-points {
-        grid-template-columns: 1fr;
-        gap: 20px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+
+      .bullet-point {
+        display: flex;
+        align-items: flex-start;
+        gap: 15px;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.02);
+        border-radius: 12px;
+        border: 1px solid rgba(25, 204, 250, 0.1);
+      }
+
+      .bullet-icon {
+        width: 8px;
+        height: 8px;
+        background: linear-gradient(135deg, #19ccfa 0%, #de760b 100%);
+        border-radius: 50%;
+        margin-top: 8px;
+        flex-shrink: 0;
       }
 
       .bullet-text {
-        font-size: 1rem;
+        font-size: 1.1rem;
+        font-weight: 500;
+        color: #eef2f6;
+        line-height: 1.6;
       }
-    }
-  </style>
-</head>
-<body>
-  <div class="slide-container">
-    <!-- Logo Section -->
-    <div class="logo-section">
-      <img src="https://erify-world.github.io/brand/diamond-flame.svg" alt="ERIFY™ Logo" class="logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-      <div class="logo-fallback">ERIFY™</div>
-    </div>
 
-    <!-- Content Section -->
-    <div class="content-section">
-      <!-- Attribution Template Section -->
-      <div class="attribution-template">
-        <h1 class="attribution-title">Attribution Template</h1>
-        <p class="attribution-text">
-          This template provides a standardized format for crediting and acknowledging sources, 
-          contributors, and intellectual property in a professional and legally compliant manner. 
-          It ensures transparency and maintains the integrity of collaborative work.
-        </p>
+      @media (max-width: 768px) {
+        body {
+          padding: 40px 20px;
+        }
+
+        .attribution-title {
+          font-size: 2rem;
+        }
+
+        .attribution-text {
+          font-size: 1.1rem;
+        }
+
+        .why-matters-title {
+          font-size: 1.75rem;
+        }
+
+        .bullet-points {
+          grid-template-columns: 1fr;
+          gap: 20px;
+        }
+
+        .bullet-text {
+          font-size: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="slide-container">
+      <!-- Logo Section -->
+      <div class="logo-section">
+        <img
+          src="https://erify-world.github.io/brand/diamond-flame.svg"
+          alt="ERIFY™ Logo"
+          class="logo"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+        />
+        <div class="logo-fallback">ERIFY™</div>
       </div>
 
-      <!-- Why it Matters Section -->
-      <div class="why-matters-section">
-        <h2 class="why-matters-title">Why it Matters</h2>
-        <div class="bullet-points">
-          <div class="bullet-point">
-            <div class="bullet-icon"></div>
-            <div class="bullet-text">Ensures legal compliance and protects intellectual property rights</div>
-          </div>
-          <div class="bullet-point">
-            <div class="bullet-icon"></div>
-            <div class="bullet-text">Builds trust and credibility with stakeholders and partners</div>
-          </div>
-          <div class="bullet-point">
-            <div class="bullet-icon"></div>
-            <div class="bullet-text">Promotes transparency in collaborative environments</div>
-          </div>
-          <div class="bullet-point">
-            <div class="bullet-icon"></div>
-            <div class="bullet-text">Maintains professional standards and industry best practices</div>
-          </div>
-          <div class="bullet-point">
-            <div class="bullet-icon"></div>
-            <div class="bullet-text">Facilitates proper recognition of contributors and sources</div>
-          </div>
-          <div class="bullet-point">
-            <div class="bullet-icon"></div>
-            <div class="bullet-text">Reduces risk of plagiarism and copyright infringement</div>
+      <!-- Content Section -->
+      <div class="content-section">
+        <!-- Attribution Template Section -->
+        <div class="attribution-template">
+          <h1 class="attribution-title">Attribution Template</h1>
+          <p class="attribution-text">
+            This template provides a standardized format for crediting and
+            acknowledging sources, contributors, and intellectual property in a
+            professional and legally compliant manner. It ensures transparency
+            and maintains the integrity of collaborative work.
+          </p>
+        </div>
+
+        <!-- Why it Matters Section -->
+        <div class="why-matters-section">
+          <h2 class="why-matters-title">Why it Matters</h2>
+          <div class="bullet-points">
+            <div class="bullet-point">
+              <div class="bullet-icon"></div>
+              <div class="bullet-text">
+                Ensures legal compliance and protects intellectual property
+                rights
+              </div>
+            </div>
+            <div class="bullet-point">
+              <div class="bullet-icon"></div>
+              <div class="bullet-text">
+                Builds trust and credibility with stakeholders and partners
+              </div>
+            </div>
+            <div class="bullet-point">
+              <div class="bullet-icon"></div>
+              <div class="bullet-text">
+                Promotes transparency in collaborative environments
+              </div>
+            </div>
+            <div class="bullet-point">
+              <div class="bullet-icon"></div>
+              <div class="bullet-text">
+                Maintains professional standards and industry best practices
+              </div>
+            </div>
+            <div class="bullet-point">
+              <div class="bullet-icon"></div>
+              <div class="bullet-text">
+                Facilitates proper recognition of contributors and sources
+              </div>
+            </div>
+            <div class="bullet-point">
+              <div class="bullet-icon"></div>
+              <div class="bullet-text">
+                Reduces risk of plagiarism and copyright infringement
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</body>
+  </body>
 </html>

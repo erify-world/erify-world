@@ -1,0 +1,45 @@
+{
+  "name": "@erify/erify-world",
+  "version": "1.0.0",
+  "description": "ERIFY™ World - Luxury digital experience ecosystem with AI-powered platforms and innovation",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "prettier --check . && echo '✅ All files are properly formatted'",
+    "prepare": "husky install",
+    "precommit": "lint-staged"
+  },
+  "keywords": [
+    "erify",
+    "luxury-tech",
+    "ai-platforms",
+    "digital-experience",
+    "ui-components",
+    "design-system"
+  ],
+  "author": "ERIFY™ Technologies",
+  "license": "SEE LICENSE IN LICENSE",
+  "homepage": "https://erifyworldwide.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/erify-world/erify-world.git"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.0.0",
+    "@commitlint/config-conventional": "^19.0.0",
+    "husky": "^9.0.0",
+    "lint-staged": "^15.0.0",
+    "prettier": "^3.2.0"
+  },
+  "lint-staged": {
+    "*.{js,ts,json,md,html,css,scss,yml,yaml}": [
+      "prettier --write"
+    ]
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}

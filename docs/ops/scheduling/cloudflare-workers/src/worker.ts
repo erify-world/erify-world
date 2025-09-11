@@ -4,10 +4,10 @@ export interface Env {
 }
 
 const JOBS = {
-  every5min: { path: "/cron/ee-recent", method: "POST" },
-  partiesEC: { path: "/cron/parties-import", method: "POST" },
-  checkCurrent: { path: "/cron/check-current", method: "POST" },
-  mopDelta25: { path: "/cron/mop-recent?delta=25", method: "POST" }
+  every5min: { path: '/cron/ee-recent', method: 'POST' },
+  partiesEC: { path: '/cron/parties-import', method: 'POST' },
+  checkCurrent: { path: '/cron/check-current', method: 'POST' },
+  mopDelta25: { path: '/cron/mop-recent?delta=25', method: 'POST' },
 };
 
 export default {
@@ -34,10 +34,10 @@ async function call(env: Env, job: { path: string; method: string }) {
   const res = await fetch(url, {
     method: job.method,
     headers: {
-      'Authorization': `Bearer ${env.ERIFY_CRON_TOKEN}`,
-      'Content-Type': 'application/json'
+      Authorization: `Bearer ${env.ERIFY_CRON_TOKEN}`,
+      'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ source: 'cf-worker' })
+    body: JSON.stringify({ source: 'cf-worker' }),
   });
   // Optional: send logs to Logpush or Workers Analytics Engine
   if (!res.ok) {

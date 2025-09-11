@@ -16,11 +16,11 @@ module.exports = {
         'style',
         'perf',
         'refactor',
-        'test'
-      ]
+        'test',
+      ],
     ],
     'subject-case': [0, 'always'], // allow sentence case + emojis
     'subject-full-stop': [0, 'never'], // no trailing period requirement
-    'header-max-length': [2, 'always', 72]
-  }
+    'header-max-length': [2, 'always', 72],
+  },
 };

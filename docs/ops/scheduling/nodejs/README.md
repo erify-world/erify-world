@@ -1,6 +1,7 @@
 # Node.js Cron Template
 
-Why this works: mirrors original behavior; uses node-cron for schedules, execa to run manage.py, optional nice/ionice, and a PID/lock file to emulate flock.
+Why this works: mirrors original behavior; uses node-cron for schedules, execa to run manage.py,
+optional nice/ionice, and a PID/lock file to emulate flock.
 
 ## Files
 
@@ -102,7 +103,8 @@ pm2 set pm2-logrotate:retain 7
 
 ## Notes
 
-- **MAILTO**: Not a cron concept here. Use PM2 log forwarding, Papertrail, or a Pino transport to email/Slack if needed.
+- **MAILTO**: Not a cron concept here. Use PM2 log forwarding, Papertrail, or a Pino transport to
+  email/Slack if needed.
 - **USE_NICE=1**: Enables nice/ionice (Linux only).
 - **proper-lockfile**: Emulates flock to prevent job overlap.
 - **Timezone**: Uses system timezone. For specific timezone, set `TZ` environment variable.

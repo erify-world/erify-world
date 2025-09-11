@@ -12,30 +12,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '14'
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14"
 
-    - name: Install dependencies
-      run: |
-        npm install
+      - name: Install dependencies
+        run: |
+          npm install
 
-    - name: Enhance signed iframe token handling
-      run: |
-        # Your script for handling signed iframe token
+      - name: Enhance signed iframe token handling
+        run: |
+          # Your script for handling signed iframe token
 
-    - name: Run tests
-      run: |
-        npm test
+      - name: Run tests
+        run: |
+          npm test
 
-    - name: Deploy
-      run: |
-        # Your deployment script
+      - name: Deploy
+        run: |
+          # Your deployment script
 
-    - name: Error handling
-      run: |
-        # Your error handling script
+      - name: Error handling
+        run: |
+          # Your error handling script
