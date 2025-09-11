@@ -1,0 +1,36 @@
+{
+  "name": "erify-world",
+  "version": "1.0.0",
+  "description": "ERIFY™ World - Global ecosystem of AI-powered platforms and luxury digital experiences",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "prepare": "husky install",
+    "lint:commit": "commitlint --edit",
+    "docs:dev": "echo 'Docs development server'",
+    "docs:build": "echo 'Building documentation'",
+    "docs:preview": "echo 'Preview built docs'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/erify-world/erify-world.git"
+  },
+  "author": "DC ERIFY <contact@erifyworldwide.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/erify-world/erify-world/issues"
+  },
+  "homepage": "https://github.com/erify-world/erify-world#readme",
+  "devDependencies": {
+    "@commitlint/cli": "^18.4.3",
+    "@commitlint/config-conventional": "^18.4.3",
+    "husky": "^8.0.3"
+  },
+  "keywords": [
+    "erify",
+    "luxury-tech",
+    "ai-platforms",
+    "digital-experiences",
+    "documentation"
+  ]
+}
