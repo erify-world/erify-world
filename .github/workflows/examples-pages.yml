@@ -1,19 +1,99 @@
-name: GitHub Pages
+name: 📄 GitHub Pages Deployment
 
 on:
   push:
     branches:
-      - main  # Change this to your default branch if it's different
+      - main  # Deploy on main branch changes
+  pull_request:
+    branches:
+      - main  # Preview deployments for PRs
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
-  github-pages:
+  # Build job
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./examples
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build documentation
+        run: |
+          # Create static site structure
+          mkdir -p _site
+          cp -r docs/* _site/ 2>/dev/null || echo "No docs to copy"
+          cp README.md _site/index.md 2>/dev/null || echo "README copied"
+
+          # Copy additional static assets
+          if [ -d "assets" ]; then
+            cp -r assets _site/
+          fi
+
+          # Ensure index.html exists
+          if [ ! -f "_site/index.html" ]; then
+            cat > _site/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <title>ERIFY™ World</title>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <link rel="stylesheet" 
+              href="https://cdn.jsdelivr.net/npm/github-markdown-css@5/github-markdown.min.css">
+            <style>
+              body { max-width: 980px; margin: 0 auto; padding: 45px; }
+              .markdown-body { box-sizing: border-box; min-width: 200px; }
+            </style>
+          </head>
+          <body class="markdown-body">
+            <div id="content"></div>
+            <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+            <script>
+              fetch("index.md")
+                .then(r => r.text())
+                .then(md => document.getElementById("content").innerHTML = marked.parse(md))
+                .catch(() => document.getElementById("content").innerHTML = 
+                  "<h1>ERIFY™ World</h1><p>Documentation site</p>");
+            </script>
+          </body>
+          </html>
+          EOF
+          fi
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: ./_site
+
+  # Deployment job (only on main branch)
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v3
