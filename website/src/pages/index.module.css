@@ -1,0 +1,214 @@
+/**
+ * ERIFY™ Homepage Luxury Styling
+ * CSS files with the .module.css suffix will be treated as CSS modules
+ * and scoped locally.
+ */
+
+.heroBanner {
+  padding: 6rem 0;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--erify-black) 0%, var(--erify-elev-1) 50%, var(--erify-black) 100%);
+  border-bottom: 2px solid rgba(25, 204, 250, 0.2);
+}
+
+.heroBanner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(25, 204, 250, 0.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+
+.buttons .button {
+  margin: 0.5rem;
+  min-width: 200px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.buttons .button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--erify-glow-cta);
+}
+
+/* Product Hero Panels Section */
+.productHeroes {
+  padding: 4rem 0;
+  background: var(--erify-black);
+}
+
+.heroGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.heroPanel {
+  background: var(--erify-elev-1);
+  border: 1px solid rgba(25, 204, 250, 0.2);
+  border-radius: 16px;
+  padding: 2rem;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.heroPanel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, transparent 0%, rgba(25, 204, 250, 0.05) 50%, transparent 100%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.heroPanel:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--erify-glow-subtle);
+  border-color: var(--erify-blue);
+}
+
+.heroPanel:hover::before {
+  opacity: 1;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.heroIcon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(25, 204, 250, 0.1);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.heroIcon img {
+  width: 32px;
+  height: 32px;
+  filter: drop-shadow(0 0 8px rgba(25, 204, 250, 0.5));
+}
+
+.heroPanel:hover .heroIcon {
+  background: rgba(25, 204, 250, 0.2);
+  box-shadow: var(--erify-glow-subtle);
+}
+
+.heroTitle {
+  color: var(--erify-blue);
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.5px;
+}
+
+.heroTagline {
+  color: var(--erify-orange);
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  letter-spacing: 0.3px;
+}
+
+.heroDescription {
+  color: var(--erify-text-muted);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+}
+
+/* Individual Panel Customizations */
+.erivoxPanel:hover {
+  border-color: var(--erify-blue);
+  box-shadow: 0 0 20px 4px rgba(25, 204, 250, 0.2);
+}
+
+.averizyPanel:hover {
+  border-color: var(--erify-blue-electric);
+  box-shadow: 0 0 20px 4px rgba(17, 201, 255, 0.2);
+}
+
+.flamePanel:hover {
+  border-color: var(--erify-orange);
+  box-shadow: 0 0 20px 4px rgba(222, 118, 11, 0.2);
+}
+
+.walletPanel:hover {
+  border-color: var(--erify-orange-warm);
+  box-shadow: 0 0 20px 4px rgba(255, 138, 26, 0.2);
+}
+
+/* Responsive Design */
+@media screen and (max-width: 996px) {
+  .heroBanner {
+    padding: 3rem 1rem;
+  }
+  
+  .productHeroes {
+    padding: 3rem 1rem;
+  }
+  
+  .heroGrid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .heroPanel {
+    padding: 1.5rem;
+  }
+  
+  .buttons {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .buttons .button {
+    min-width: 250px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .heroBanner {
+    padding: 2rem 1rem;
+  }
+  
+  .heroTitle {
+    font-size: 1.3rem;
+  }
+  
+  .heroTagline {
+    font-size: 0.9rem;
+  }
+  
+  .heroDescription {
+    font-size: 0.9rem;
+  }
+}

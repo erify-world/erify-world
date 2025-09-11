@@ -1,0 +1,179 @@
+import {themes as prismThemes} from 'prism-react-renderer';
+import type {Config} from '@docusaurus/types';
+import type * as Preset from '@docusaurus/preset-classic';
+
+// This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
+
+const config: Config = {
+  title: 'ERIFY™ World',
+  tagline: 'From the ashes to the stars ✨ — Luxury AI-powered platforms and digital experiences',
+  favicon: 'img/favicon.ico',
+
+  // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
+  future: {
+    v4: true, // Improve compatibility with the upcoming Docusaurus v4
+  },
+
+  // Set the production url of your site here
+  url: 'https://erify-world.github.io',
+  // Set the /<baseUrl>/ pathname under which your site is served
+  // For GitHub pages deployment, it is often '/<projectName>/'
+  baseUrl: '/erify-world/',
+
+  // GitHub pages deployment config.
+  // If you aren't using GitHub pages, you don't need these.
+  organizationName: 'erify-world', // Usually your GitHub org/user name.
+  projectName: 'erify-world', // Usually your repo name.
+
+  onBrokenLinks: 'throw',
+  onBrokenMarkdownLinks: 'warn',
+
+  // Even if you don't use internationalization, you can use this field to set
+  // useful metadata like html lang. For example, if your site is Chinese, you
+  // may want to replace "en" with "zh-Hans".
+  i18n: {
+    defaultLocale: 'en',
+    locales: ['en'],
+  },
+
+  presets: [
+    [
+      'classic',
+      {
+        docs: {
+          sidebarPath: './sidebars.ts',
+          // Please change this to your repo.
+          // Remove this to remove the "edit this page" links.
+          editUrl:
+            'https://github.com/erify-world/erify-world/tree/main/website/',
+        },
+        blog: {
+          showReadingTime: true,
+          feedOptions: {
+            type: ['rss', 'atom'],
+            xslt: true,
+          },
+          // Please change this to your repo.
+          // Remove this to remove the "edit this page" links.
+          editUrl:
+            'https://github.com/erify-world/erify-world/tree/main/website/',
+          // Useful options to enforce blogging best practices
+          onInlineTags: 'warn',
+          onInlineAuthors: 'warn',
+          onUntruncatedBlogPosts: 'warn',
+        },
+        theme: {
+          customCss: './src/css/custom.css',
+        },
+      } satisfies Preset.Options,
+    ],
+  ],
+
+  themeConfig: {
+    // Replace with your project's social card
+    image: 'img/erify-social-card.jpg',
+    navbar: {
+      title: 'ERIFY™',
+      logo: {
+        alt: 'ERIFY™ Logo',
+        src: 'img/erify-logo.svg',
+      },
+      items: [
+        {
+          type: 'docSidebar',
+          sidebarId: 'tutorialSidebar',
+          position: 'left',
+          label: 'Docs',
+        },
+        {
+          to: '/docs/erivox/overview',
+          label: 'ERIVOX™',
+          position: 'left',
+        },
+        {
+          to: '/docs/averizy/overview',
+          label: 'AVERIZY™',
+          position: 'left',
+        },
+        {to: '/blog', label: 'Blog', position: 'left'},
+        {
+          href: 'https://github.com/erify-world/erify-world',
+          label: 'GitHub',
+          position: 'right',
+        },
+      ],
+    },
+    algolia: {
+      // Algolia DocSearch configuration
+      appId: process.env.ALGOLIA_APP_ID || 'YOUR_APP_ID',
+      apiKey: process.env.ALGOLIA_SEARCH_API_KEY || 'YOUR_SEARCH_API_KEY',
+      indexName: process.env.ALGOLIA_INDEX_NAME || 'erify-world',
+      contextualSearch: true,
+      searchParameters: {},
+      placeholder: 'Search ERIFY™ docs...',
+    },
+    footer: {
+      style: 'dark',
+      links: [
+        {
+          title: 'Products',
+          items: [
+            {
+              label: 'ERIVOX™',
+              to: '/docs/erivox/overview',
+            },
+            {
+              label: 'AVERIZY™',
+              to: '/docs/averizy/overview',
+            },
+            {
+              label: 'Flame Feed',
+              to: '/docs/flame-feed/overview',
+            },
+            {
+              label: 'ERIFY Wallet',
+              to: '/docs/erify-wallet/overview',
+            },
+          ],
+        },
+        {
+          title: 'Community',
+          items: [
+            {
+              label: 'X (Twitter)',
+              href: 'https://x.com/erifyteam',
+            },
+            {
+              label: 'YouTube',
+              href: 'https://www.youtube.com/@erifyworld',
+            },
+            {
+              label: 'GitHub',
+              href: 'https://github.com/erify-world',
+            },
+          ],
+        },
+        {
+          title: 'More',
+          items: [
+            {
+              label: 'Blog',
+              to: '/blog',
+            },
+            {
+              label: 'Website',
+              href: 'https://erifyworldwide.com',
+            },
+          ],
+        },
+      ],
+      copyright: `Copyright © ${new Date().getFullYear()} ERIFY™ Technologies. Built with luxury and precision.`,
+    },
+    prism: {
+      theme: prismThemes.github,
+      darkTheme: prismThemes.dracula,
+    },
+  } satisfies Preset.ThemeConfig,
+};
+
+export default config;

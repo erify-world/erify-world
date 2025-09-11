@@ -1,0 +1,17 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="erivoxGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#19CCFA;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#DE760B;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <!-- Voice/Audio waves with luxury diamond shape -->
+  <path d="M12 2L15.5 5.5L12 9L8.5 5.5L12 2Z" fill="url(#erivoxGradient)" opacity="0.8"/>
+  <circle cx="12" cy="12" r="3" fill="url(#erivoxGradient)"/>
+  <path d="M6 8C6 6.9 6.9 6 8 6V4C5.8 4 4 5.8 4 8H6Z" fill="#19CCFA" opacity="0.6"/>
+  <path d="M18 8C18 6.9 17.1 6 16 6V4C18.2 4 20 5.8 20 8H18Z" fill="#19CCFA" opacity="0.6"/>
+  <path d="M6 16C6 17.1 6.9 18 8 18V20C5.8 20 4 18.2 4 16H6Z" fill="#DE760B" opacity="0.6"/>
+  <path d="M18 16C18 17.1 17.1 18 16 18V20C18.2 20 20 18.2 20 16H18Z" fill="#DE760B" opacity="0.6"/>
+  <!-- Microphone element -->
+  <rect x="11" y="14" width="2" height="6" rx="1" fill="url(#erivoxGradient)" opacity="0.7"/>
+</svg>

@@ -1,0 +1,28 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="erifyLogoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#19CCFA;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#11C9FF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#DE760B;stop-opacity:1" />
+    </linearGradient>
+    <filter id="logoGlow">
+      <feGaussianBlur stdDeviation="1" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <!-- Main diamond/crystal logo -->
+  <path d="M16 2L26 12L16 22L6 12L16 2Z" fill="url(#erifyLogoGradient)" filter="url(#logoGlow)" opacity="0.9"/>
+  <!-- Inner diamond -->
+  <path d="M16 6L22 12L16 18L10 12L16 6Z" fill="#19CCFA" opacity="0.6"/>
+  <!-- Center core -->
+  <circle cx="16" cy="12" r="3" fill="url(#erifyLogoGradient)" opacity="0.8"/>
+  <!-- Luxury accents -->
+  <path d="M16 4L18 6L16 8L14 6L16 4Z" fill="#19CCFA" opacity="0.7"/>
+  <path d="M16 16L18 18L16 20L14 18L16 16Z" fill="#DE760B" opacity="0.7"/>
+  <!-- Side gems -->
+  <circle cx="8" cy="12" r="2" fill="#19CCFA" opacity="0.5"/>
+  <circle cx="24" cy="12" r="2" fill="#DE760B" opacity="0.5"/>
+</svg>
