@@ -2,46 +2,61 @@
 sidebar_position: 1
 ---
 
-# Tutorial Intro
+# Welcome to ERIFY™ World 💎🔥
 
-Let's discover **Docusaurus in less than 5 minutes**.
+**From the ashes to the stars ✨**
 
-## Getting Started
+Welcome to the comprehensive documentation for ERIFY™ Technologies — a global ecosystem of AI-powered platforms, luxury digital experiences, and innovation that inspires.
 
-Get started by **creating a new site**.
+## 🚀 Our Products
 
-Or **try Docusaurus immediately** with **[docusaurus.new](https://docusaurus.new)**.
+### 🗣💠 ERIVOX™
+Intelligent assistant for voice + text. Experience the future of AI conversation with luxury voice processing and seamless text integration.
 
-### What you'll need
+[Explore ERIVOX™ →](./erivox/overview)
 
-- [Node.js](https://nodejs.org/en/download/) version 18.0 or above:
-  - When installing Node.js, you are recommended to check all checkboxes related to dependencies.
+### ✅💎 AVERIZY™
+Luxury verification platform. Trust, verified. AVERIZY™ delivers enterprise-grade verification with diamond-level security.
 
-## Generate a new site
+[Discover AVERIZY™ →](./averizy/overview)
 
-Generate a new Docusaurus site using the **classic template**.
+### 🔥 Flame Feed
+AI-powered social experience where creators ignite their potential. Combines social discovery with AI-driven content creation.
 
-The classic template will automatically be added to your project after you run the command:
+[Join the Flame →](./flame-feed/overview)
 
-```bash
-npm init docusaurus@latest my-website classic
-```
+### 💳 ERIFY Wallet
+Secure digital payments and gift cards. Luxury meets security in digital payments with military-grade security.
 
-You can type this command into Command Prompt, Powershell, Terminal, or any other integrated terminal of your code editor.
+[Secure Your Future →](./erify-wallet/overview)
 
-The command also installs all necessary dependencies you need to run Docusaurus.
+## 🌍 About ERIFY™
 
-## Start your site
+**ERIFY™ Technologies** is building a global ecosystem of AI-powered platforms and luxury digital experiences. Founded in **Nasarawa, Nigeria**, we're building **ERIFY™ to the world** with a focus on:
 
-Run the development server:
+- 🏗 **Luxury tech and AI systems**
+- 🌐 **Global-scale platforms**
+- ✨ **Innovation that inspires**
+- 💎 **Cinematic user experiences**
 
-```bash
-cd my-website
-npm run start
-```
+## 🛠️ Getting Started
 
-The `cd` command changes the directory you're working with. In order to work with your newly created Docusaurus site, you'll need to navigate the terminal there.
+Choose your path to explore the ERIFY™ ecosystem:
 
-The `npm run start` command builds your website locally and serves it through a development server, ready for you to view at http://localhost:3000/.
+- **Developers**: Start with our [API documentation](./erivox/getting-started)
+- **Business**: Learn about [enterprise solutions](./averizy/overview)
+- **Creators**: Discover [Flame Feed](./flame-feed/overview)
+- **Security**: Explore [ERIFY Wallet](./erify-wallet/overview)
 
-Open `docs/intro.md` (this page) and edit some lines: the site **reloads automatically** and displays your changes.
+## 🌈 Design Philosophy
+
+ERIFY™ stands for **cinematic luxury, powered by next-gen AI**. Our design system features:
+
+- **Deep black canvas** with **diamond blue** (#19CCFA) and **flame orange** (#DE760B) accents
+- **Glow effects** and **subtle animations** for premium feel
+- **Accessible design** with contrast ≥ 4.5:1
+- **Motion that delights** without overwhelming
+
+---
+
+⚡ *Building legacy systems, inspiring the world, and creating the future of digital luxury.*

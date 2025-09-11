@@ -1,0 +1,20 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="flameGradient" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#DE760B;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#FF8A1A;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#19CCFA;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <!-- Flame Feed icon - flame with feed lines -->
+  <path d="M8 18C8 15.79 9.79 14 12 14S16 15.79 16 18C16 20.21 14.21 22 12 22S8 20.21 8 18Z" fill="url(#flameGradient)" opacity="0.8"/>
+  <path d="M10 14C10 12.9 10.9 12 12 12S14 12.9 14 14" fill="#FF8A1A" opacity="0.6"/>
+  <path d="M11 10C11 9.45 11.45 9 12 9S13 9.45 13 10" fill="#19CCFA" opacity="0.7"/>
+  <!-- Feed lines -->
+  <line x1="2" y1="4" x2="8" y2="4" stroke="#19CCFA" stroke-width="2" opacity="0.8"/>
+  <line x1="2" y1="8" x2="6" y2="8" stroke="#19CCFA" stroke-width="2" opacity="0.6"/>
+  <line x1="2" y1="12" x2="7" y2="12" stroke="#DE760B" stroke-width="2" opacity="0.7"/>
+  <line x1="16" y1="4" x2="22" y2="4" stroke="#DE760B" stroke-width="2" opacity="0.8"/>
+  <line x1="18" y1="8" x2="22" y2="8" stroke="#DE760B" stroke-width="2" opacity="0.6"/>
+  <line x1="17" y1="12" x2="22" y2="12" stroke="#19CCFA" stroke-width="2" opacity="0.7"/>
+</svg>

@@ -1,30 +1,232 @@
 /**
- * Any CSS included here will be global. The classic template
- * bundles Infima by default. Infima is a CSS framework designed to
- * work well for content-centric websites.
+ * ERIFY™ Luxury Documentation Styling
+ * Cinematic luxury with diamond blue & flame orange glows
  */
 
-/* You can override the default Infima variables here. */
+/* ERIFY™ Brand Variables */
 :root {
-  --ifm-color-primary: #2e8555;
-  --ifm-color-primary-dark: #29784c;
-  --ifm-color-primary-darker: #277148;
-  --ifm-color-primary-darkest: #205d3b;
-  --ifm-color-primary-light: #33925d;
-  --ifm-color-primary-lighter: #359962;
-  --ifm-color-primary-lightest: #3cad6e;
+  /* ERIFY™ Color Palette */
+  --erify-blue: #19CCFA;
+  --erify-blue-electric: #11C9FF;
+  --erify-orange: #DE760B;
+  --erify-orange-warm: #FF8A1A;
+  --erify-black: #0A0B0C;
+  --erify-elev-1: #111315;
+  --erify-elev-2: #171A1D;
+  --erify-text: #EEF2F6;
+  --erify-text-muted: #9BA7B4;
+  --erify-success: #2ECC71;
+  --erify-warning: #F39C12;
+  --erify-danger: #E63946;
+
+  /* Override Docusaurus variables with ERIFY™ branding */
+  --ifm-color-primary: #19CCFA;
+  --ifm-color-primary-dark: #0AA0D1;
+  --ifm-color-primary-darker: #0895C3;
+  --ifm-color-primary-darkest: #0679A1;
+  --ifm-color-primary-light: #2DD2FB;
+  --ifm-color-primary-lighter: #3DE6FF;
+  --ifm-color-primary-lightest: #61EEFF;
+  
+  --ifm-background-color: var(--erify-black);
+  --ifm-navbar-background-color: var(--erify-elev-1);
+  --ifm-footer-background-color: var(--erify-elev-1);
+  --ifm-color-content: var(--erify-text);
+  --ifm-color-content-secondary: var(--erify-text-muted);
+  
   --ifm-code-font-size: 95%;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+  --docusaurus-highlighted-code-line-bg: rgba(25, 204, 250, 0.1);
+  
+  /* ERIFY™ Glow System */
+  --erify-glow-subtle: 0 0 10px 2px var(--erify-blue);
+  --erify-glow-cta: 0 0 18px 4px var(--erify-blue), 0 0 28px 10px var(--erify-orange-warm);
+  --erify-glow-hero: 0 0 30px 6px var(--erify-blue-electric), 0 0 60px 24px var(--erify-orange-warm);
 }
 
-/* For readability concerns, you should choose a lighter palette in dark mode. */
+/* Dark theme (default for ERIFY™) */
 [data-theme='dark'] {
-  --ifm-color-primary: #25c2a0;
-  --ifm-color-primary-dark: #21af90;
-  --ifm-color-primary-darker: #1fa588;
-  --ifm-color-primary-darkest: #1a8870;
-  --ifm-color-primary-light: #29d5b0;
-  --ifm-color-primary-lighter: #32d8b4;
-  --ifm-color-primary-lightest: #4fddbf;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+  --ifm-color-primary: #19CCFA;
+  --ifm-color-primary-dark: #0AA0D1;
+  --ifm-color-primary-darker: #0895C3;
+  --ifm-color-primary-darkest: #0679A1;
+  --ifm-color-primary-light: #2DD2FB;
+  --ifm-color-primary-lighter: #3DE6FF;
+  --ifm-color-primary-lightest: #61EEFF;
+  --docusaurus-highlighted-code-line-bg: rgba(25, 204, 250, 0.2);
+}
+
+/* Light theme adjustments for accessibility */
+[data-theme='light'] {
+  --ifm-background-color: #FAFBFC;
+  --ifm-color-content: #1C1E21;
+  --ifm-color-content-secondary: #606770;
+}
+
+/* Global luxury styling */
+html {
+  background: var(--erify-black);
+}
+
+body {
+  font-family: 'Inter', 'Neue Haas Grotesk Display', 'Gilroy', system-ui, -apple-system, sans-serif;
+  background: var(--erify-black);
+  color: var(--erify-text);
+}
+
+/* Navbar enhancements */
+.navbar {
+  background: var(--erify-elev-1);
+  border-bottom: 1px solid rgba(25, 204, 250, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+.navbar__brand:hover {
+  transform: scale(1.02);
+  transition: transform 0.2s ease;
+}
+
+.navbar__title {
+  background: linear-gradient(135deg, var(--erify-blue) 0%, var(--erify-orange) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* Sidebar luxury styling */
+.theme-doc-sidebar-container {
+  background: var(--erify-elev-1);
+  border-right: 1px solid rgba(25, 204, 250, 0.1);
+}
+
+.menu__link {
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.menu__link:hover {
+  background: rgba(25, 204, 250, 0.1);
+  box-shadow: var(--erify-glow-subtle);
+  transform: translateX(4px);
+}
+
+.menu__link--active {
+  background: rgba(25, 204, 250, 0.2);
+  box-shadow: var(--erify-glow-subtle);
+  color: var(--erify-blue);
+  font-weight: 600;
+}
+
+/* Search styling */
+.DocSearch-Button {
+  background: var(--erify-elev-2);
+  border: 1px solid rgba(25, 204, 250, 0.3);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.DocSearch-Button:hover {
+  box-shadow: var(--erify-glow-subtle);
+  border-color: var(--erify-blue);
+}
+
+/* Content area */
+.main-wrapper {
+  background: var(--erify-black);
+}
+
+/* Buttons and CTAs */
+.button {
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.button--primary {
+  background: linear-gradient(135deg, var(--erify-blue) 0%, var(--erify-orange) 100%);
+  border: none;
+  color: white;
+}
+
+.button--primary:hover {
+  transform: scale(1.05);
+  box-shadow: var(--erify-glow-cta);
+}
+
+/* Cards and content blocks */
+.card {
+  background: var(--erify-elev-1);
+  border: 1px solid rgba(25, 204, 250, 0.1);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: var(--erify-glow-subtle);
+  transform: translateY(-2px);
+  border-color: var(--erify-blue);
+}
+
+/* Code blocks */
+.prism-code {
+  background: var(--erify-elev-1) !important;
+  border: 1px solid rgba(25, 204, 250, 0.1);
+  border-radius: 8px;
+}
+
+/* Footer */
+.footer {
+  background: var(--erify-elev-1);
+  border-top: 1px solid rgba(25, 204, 250, 0.2);
+}
+
+.footer__title {
+  color: var(--erify-blue);
+  font-weight: 600;
+}
+
+/* Hero sections */
+.hero {
+  background: linear-gradient(135deg, var(--erify-black) 0%, var(--erify-elev-1) 100%);
+  border-bottom: 1px solid rgba(25, 204, 250, 0.2);
+}
+
+.hero__title {
+  background: linear-gradient(135deg, var(--erify-blue) 0%, var(--erify-orange) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.hero__subtitle {
+  color: var(--erify-text-muted);
+  font-size: 1.2rem;
+}
+
+/* Animations */
+@keyframes erify-pulse {
+  0%, 100% { 
+    box-shadow: var(--erify-glow-subtle); 
+  }
+  50% { 
+    box-shadow: var(--erify-glow-cta); 
+  }
+}
+
+.erify-pulse {
+  animation: erify-pulse 2s ease-in-out infinite;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .hero__title {
+    font-size: 2rem;
+  }
+  
+  .navbar__title {
+    font-size: 1.2rem;
+  }
 }

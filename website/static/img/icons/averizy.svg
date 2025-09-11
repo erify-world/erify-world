@@ -1,0 +1,24 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="averizyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#19CCFA;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#11C9FF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#DE760B;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <!-- Verification shield/check with luxury diamond accents -->
+  <path d="M12 2L16 6L12 10L8 6L12 2Z" fill="url(#averizyGradient)" filter="url(#glow)" opacity="0.9"/>
+  <circle cx="12" cy="12" r="8" stroke="url(#averizyGradient)" stroke-width="2" fill="none" opacity="0.7"/>
+  <path d="M9 12L11 14L15 10" stroke="#19CCFA" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <!-- Additional luxury elements -->
+  <circle cx="12" cy="12" r="2" fill="#19CCFA" opacity="0.4"/>
+  <path d="M6 18L8 20" stroke="#DE760B" stroke-width="1.5" opacity="0.6"/>
+  <path d="M18 18L16 20" stroke="#DE760B" stroke-width="1.5" opacity="0.6"/>
+</svg>

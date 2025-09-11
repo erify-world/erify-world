@@ -1,0 +1,20 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="walletGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#19CCFA;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#DE760B;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <!-- Luxury wallet with diamond accent -->
+  <rect x="3" y="6" width="18" height="12" rx="3" stroke="url(#walletGradient)" stroke-width="2" fill="none"/>
+  <rect x="3" y="6" width="18" height="4" rx="3" fill="url(#walletGradient)" opacity="0.3"/>
+  <!-- Diamond luxury element -->
+  <path d="M12 8L14 10L12 12L10 10L12 8Z" fill="#19CCFA" opacity="0.8"/>
+  <!-- Card slot -->
+  <rect x="6" y="13" width="8" height="2" rx="1" fill="url(#walletGradient)" opacity="0.6"/>
+  <!-- Secure chip -->
+  <rect x="16" y="12" width="3" height="2" rx="0.5" fill="#DE760B" opacity="0.7"/>
+  <!-- Luxury accents -->
+  <circle cx="19" cy="8" r="1" fill="#19CCFA" opacity="0.6"/>
+  <circle cx="5" cy="8" r="1" fill="#DE760B" opacity="0.6"/>
+</svg>
