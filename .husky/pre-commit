@@ -1,6 +1,3 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
 # ERIFY™ Pre-commit Hook: Luxury-grade code formatting
 echo "🔥💎 ERIFY™ Pre-commit: Ensuring luxury-grade code quality..."
 
