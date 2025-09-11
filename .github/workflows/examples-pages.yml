@@ -1,19 +1,134 @@
-name: GitHub Pages
+name: 📄 GitHub Pages Deployment
 
 on:
   push:
-    branches:
-      - main  # Change this to your default branch if it's different
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
-  github-pages:
+  build:
+    name: 🏗️ Build Documentation
     runs-on: ubuntu-latest
+    
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./examples
+          node-version: '20'
+
+      - name: 📋 Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: 🏗️ Build documentation site
+        run: |
+          # Create a simple documentation site structure
+          mkdir -p _site
+          
+          # Copy main documentation files
+          cp README.md _site/index.md
+          cp -r docs _site/ || echo "No docs directory found"
+          cp ERIFY_UI_Style_Guide.md _site/ || echo "No style guide found"
+          
+          # Create a simple HTML wrapper
+          cat > _site/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>💎 ERIFY™ World Documentation</title>
+              <style>
+                  body { 
+                      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+                      max-width: 1200px; 
+                      margin: 0 auto; 
+                      padding: 2rem;
+                      line-height: 1.6;
+                      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                      color: #333;
+                  }
+                  .container {
+                      background: white;
+                      border-radius: 12px;
+                      padding: 2rem;
+                      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+                  }
+                  h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 0.5rem; }
+                  .hero { text-align: center; margin: 2rem 0; }
+                  .links { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin: 2rem 0; }
+                  .link-card { 
+                      background: #f8f9fa; 
+                      border: 1px solid #e9ecef; 
+                      border-radius: 8px; 
+                      padding: 1rem; 
+                      text-decoration: none; 
+                      color: inherit;
+                      transition: transform 0.2s ease;
+                  }
+                  .link-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+                  .footer { text-align: center; margin-top: 3rem; color: #666; }
+              </style>
+          </head>
+          <body>
+              <div class="container">
+                  <div class="hero">
+                      <h1>💎🔥 ERIFY™ World Documentation</h1>
+                      <p><strong>Building luxury-grade digital experiences for the world</strong></p>
+                  </div>
+                  
+                  <div class="links">
+                      <a href="./docs/" class="link-card">
+                          <h3>📚 Documentation</h3>
+                          <p>Comprehensive guides and operational templates</p>
+                      </a>
+                      <a href="./ERIFY_UI_Style_Guide.html" class="link-card">
+                          <h3>🎨 Style Guide</h3>
+                          <p>UI/UX standards and design principles</p>
+                      </a>
+                      <a href="https://github.com/erify-world/erify-world" class="link-card">
+                          <h3>🔗 Repository</h3>
+                          <p>Source code and contribution guidelines</p>
+                      </a>
+                      <a href="https://erifyworldwide.com" class="link-card">
+                          <h3>🌍 ERIFY™ World</h3>
+                          <p>Official website and platform</p>
+                      </a>
+                  </div>
+                  
+                  <div class="footer">
+                      <p><em>⚡ From the ashes to the stars ✨ - Building the future of digital luxury</em></p>
+                  </div>
+              </div>
+          </body>
+          </html>
+          EOF
+
+      - name: 📦 Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./_site
+
+  deploy:
+    name: 🚀 Deploy to Pages
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    
+    steps:
+      - name: 🚀 Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

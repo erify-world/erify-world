@@ -1,29 +1,105 @@
 ---
-name: Bug Report
-description: Create a report to help us improve the project.
-labels: [bug, help wanted]
----
+name: 🐛 Bug Report
+description: Report a bug to help us improve the ERIFY™ ecosystem
+title: "[Bug]: "
+labels: [bug, needs-triage]
+assignees:
+  - erify-world
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 💎 Thank you for reporting a bug!
+        
+        Your feedback helps us maintain the luxury standards of the ERIFY™ ecosystem. Please provide detailed information to help us resolve this issue quickly.
 
-**Describe the bug**
+  - type: textarea
+    id: bug-description
+    attributes:
+      label: 🐛 Bug Description
+      description: A clear and concise description of what the bug is.
+      placeholder: Describe the bug...
+    validations:
+      required: true
 
-A clear and concise description of what the bug is.
+  - type: textarea
+    id: reproduction-steps
+    attributes:
+      label: 🔄 Steps to Reproduce
+      description: Steps to reproduce the behavior
+      placeholder: |
+        1. Go to '...'
+        2. Click on '...'
+        3. Scroll down to '...'
+        4. See error
+    validations:
+      required: true
 
-**To Reproduce**
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: ✅ Expected Behavior
+      description: A clear and concise description of what you expected to happen.
+      placeholder: What should have happened?
+    validations:
+      required: true
 
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '...'
-3. Scroll down to '...'
-4. See error
+  - type: textarea
+    id: actual-behavior
+    attributes:
+      label: ❌ Actual Behavior
+      description: A clear and concise description of what actually happened.
+      placeholder: What actually happened?
+    validations:
+      required: true
 
-**Expected behavior**
+  - type: dropdown
+    id: component
+    attributes:
+      label: 🏗️ Component
+      description: Which part of the ERIFY™ ecosystem is affected?
+      options:
+        - Documentation
+        - GitHub Actions/Workflows
+        - Scheduling Templates (Node.js)
+        - Scheduling Templates (Cloudflare Workers)
+        - Style Guide
+        - Community Files
+        - Other
+    validations:
+      required: true
 
-A clear and concise description of what you expected to happen.
+  - type: textarea
+    id: environment
+    attributes:
+      label: 🌍 Environment
+      description: Please provide relevant environment details
+      placeholder: |
+        - OS: [e.g. Windows 11, macOS 13, Ubuntu 22.04]
+        - Node.js version: [e.g. 18.17.0]
+        - Browser: [e.g. Chrome 115, Safari 16]
+        - Other relevant details...
+    validations:
+      required: false
 
-**Actual behavior**
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: 📋 Additional Context
+      description: Add any other context about the problem here, including screenshots or logs.
+      placeholder: Any additional information, screenshots, or logs that might help...
+    validations:
+      required: false
 
-A clear and concise description of what actually happened.
-
-**Additional context**
-
-Add any other context about the problem here.
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: ✅ Checklist
+      description: Please confirm the following
+      options:
+        - label: I have searched existing issues to ensure this bug hasn't been reported before
+          required: true
+        - label: I have provided all the requested information
+          required: true
+        - label: I understand this will be reviewed according to ERIFY™'s luxury standards
+          required: true

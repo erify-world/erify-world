@@ -1,0 +1,64 @@
+# Dependabot configuration for ERIFY™ World
+# Automated dependency management for security and freshness
+
+version: 2
+updates:
+  # Node.js Scheduling Example
+  - package-ecosystem: "npm"
+    directory: "/docs/ops/scheduling/nodejs"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "10:00"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "erify-world"
+    assignees:
+      - "erify-world"
+    labels:
+      - "dependencies"
+      - "nodejs"
+      - "automated"
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+
+  # Cloudflare Workers Scheduling Example  
+  - package-ecosystem: "npm"
+    directory: "/docs/ops/scheduling/cloudflare-workers"
+    schedule:
+      interval: "weekly"
+      day: "monday" 
+      time: "10:00"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "erify-world"
+    assignees:
+      - "erify-world"
+    labels:
+      - "dependencies"
+      - "cloudflare"
+      - "automated"
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+      day: "monday"
+      time: "10:00"
+    open-pull-requests-limit: 3
+    reviewers:
+      - "erify-world"
+    assignees:
+      - "erify-world"
+    labels:
+      - "dependencies"
+      - "github-actions"
+      - "automated"
+    commit-message:
+      prefix: "ci"
+      include: "scope"
