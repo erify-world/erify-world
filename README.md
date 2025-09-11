@@ -1,4 +1,5 @@
 # 💎🔥 Hi there, I’m DC ERIFY 👋  
+[![Docs](https://img.shields.io/badge/docs-erify--world.github.io%2Ferify--world-000?logo=book)](https://erify-world.github.io/erify-world/)
 
 Founder of **ERIFY™ Technologies** — building a global ecosystem of AI-powered platforms, luxury digital experiences, and innovation that inspires.  
 
