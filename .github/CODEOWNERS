@@ -1,2 +1,33 @@
-# Request a review automatically on all changes
+# 🛡️ ERIFY™ World Code Owners
+# These owners will be requested for review when someone opens a pull request.
+
+# Global ownership - ERIFY™ Founder and Lead Developer
 * @erify-world
+
+# GitHub Actions and CI/CD workflows
+/.github/ @erify-world
+/.github/workflows/ @erify-world
+/.github/dependabot.yml @erify-world
+
+# Documentation and guides
+/docs/ @erify-world
+*.md @erify-world
+/ERIFY_UI_Style_Guide.md @erify-world
+
+# Operational templates and scheduling
+/docs/ops/ @erify-world
+/docs/ops/scheduling/ @erify-world
+
+# Community health files
+/SECURITY.md @erify-world
+/CODE_OF_CONDUCT.md @erify-world
+/SUPPORT.md @erify-world
+/CONTRIBUTING.md @erify-world
+
+# Configuration files
+/.commitlintrc.cjs @erify-world
+/package.json @erify-world
+/package-lock.json @erify-world
+
+# License and legal
+/LICENSE @erify-world

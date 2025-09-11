@@ -1,9 +1,116 @@
 ---
-title: "Add New Feature"
-labels: ["good first issue", "feature"]
-description: |
-  **Task Description**: Describe the feature you want to add.
+name: ✨ Feature Request
+description: Suggest a luxury-grade enhancement for the ERIFY™ ecosystem
+title: "[Feature]: "
+labels: [enhancement, feature, needs-review]
+assignees:
+  - erify-world
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## ✨ Thank you for your feature suggestion!
+        
+        Your ideas help us build a better ERIFY™ ecosystem. We value innovative suggestions that align with our luxury standards and global vision.
 
-  **Acceptance Criteria**: Define what will make this feature complete.
+  - type: textarea
+    id: feature-description
+    attributes:
+      label: 💡 Feature Description
+      description: A clear and detailed description of the feature you'd like to see
+      placeholder: Describe your feature idea in detail...
+    validations:
+      required: true
 
-  **Steps to Reproduce**: N/A
+  - type: textarea
+    id: problem-statement
+    attributes:
+      label: 🎯 Problem Statement
+      description: What problem does this feature solve? What pain point does it address?
+      placeholder: Describe the problem this feature would solve...
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-solution
+    attributes:
+      label: 🛠️ Proposed Solution
+      description: How do you envision this feature working?
+      placeholder: Describe your proposed solution...
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 🔄 Alternative Solutions
+      description: Have you considered any alternative approaches?
+      placeholder: Describe any alternative solutions you've considered...
+    validations:
+      required: false
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: 🏗️ Component Area
+      description: Which part of the ERIFY™ ecosystem would this feature affect?
+      options:
+        - Documentation
+        - GitHub Actions/Workflows
+        - Scheduling Templates
+        - Style Guide/Design System
+        - Community Experience
+        - Developer Tools
+        - Infrastructure
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: 📊 Priority Level
+      description: How important is this feature to you?
+      options:
+        - 🔴 Critical - Blocking core functionality
+        - 🟠 High - Important for productivity
+        - 🟡 Medium - Nice to have enhancement
+        - 🟢 Low - Minor improvement
+    validations:
+      required: true
+
+  - type: textarea
+    id: use-cases
+    attributes:
+      label: 🎭 Use Cases
+      description: Provide specific use cases or user stories for this feature
+      placeholder: |
+        - As a developer, I want...
+        - When using the scheduling templates, I need...
+        - In my workflow, this would help me...
+    validations:
+      required: false
+
+  - type: textarea
+    id: mockups
+    attributes:
+      label: 🎨 Mockups/Examples
+      description: Include any mockups, examples, or references that illustrate your idea
+      placeholder: Paste images, links to examples, or describe the visual/functional aspects...
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: ✅ Checklist
+      description: Please confirm the following
+      options:
+        - label: I have searched existing issues to ensure this feature hasn't been requested before
+          required: true
+        - label: This feature aligns with ERIFY™'s luxury standards and global vision
+          required: true
+        - label: I am willing to help implement this feature if needed
+          required: false
+        - label: I understand this request will be evaluated based on impact and feasibility
+          required: true

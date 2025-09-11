@@ -1,0 +1,196 @@
+name: 🔍 Continuous Integration
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+permissions:
+  contents: read
+
+jobs:
+  # Validate configuration files and documentation
+  validate:
+    name: 📋 Validate Files
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔍 Validate YAML files
+        run: |
+          find . -name "*.yml" -o -name "*.yaml" | while read file; do
+            echo "Validating $file"
+            python -c "import yaml; yaml.safe_load(open('$file'))" || exit 1
+          done
+
+      - name: 🔍 Validate JSON files
+        run: |
+          find . -name "*.json" | while read file; do
+            echo "Validating $file"
+            python -c "import json; json.load(open('$file'))" || exit 1
+          done
+
+      - name: 📝 Check for required files
+        run: |
+          required_files=(
+            "README.md"
+            "LICENSE"
+            "SECURITY.md"
+            "CODE_OF_CONDUCT.md"
+            "SUPPORT.md"
+            "CONTRIBUTING.md"
+            ".github/dependabot.yml"
+            ".github/CODEOWNERS"
+          )
+          
+          for file in "${required_files[@]}"; do
+            if [ ! -f "$file" ]; then
+              echo "❌ Required file missing: $file"
+              exit 1
+            else
+              echo "✅ Found: $file"
+            fi
+          done
+
+  # Lint and format checking
+  lint:
+    name: 🎨 Lint & Format
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+
+      - name: 📦 Install dependencies (Node.js scheduling)
+        run: |
+          if [ -f "docs/ops/scheduling/nodejs/package.json" ]; then
+            cd docs/ops/scheduling/nodejs
+            npm ci
+          fi
+
+      - name: 📦 Install dependencies (Cloudflare Workers)
+        run: |
+          if [ -f "docs/ops/scheduling/cloudflare-workers/package.json" ]; then
+            cd docs/ops/scheduling/cloudflare-workers
+            npm ci
+          fi
+
+      - name: 🔍 Check JavaScript/TypeScript files
+        run: |
+          # Check for syntax errors in JS/TS files
+          find . -name "*.js" -o -name "*.ts" | while read file; do
+            echo "Checking syntax: $file"
+            node -c "$file" 2>/dev/null || {
+              echo "❌ Syntax error in: $file"
+              exit 1
+            }
+          done
+
+  # Link checking for documentation
+  links:
+    name: 🔗 Check Links
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔗 Check markdown links
+        uses: gaurav-nelson/github-action-markdown-link-check@v1
+        with:
+          use-quiet-mode: 'yes'
+          use-verbose-mode: 'yes'
+          config-file: '.github/mlc_config.json'
+
+  # Security scanning
+  security:
+    name: 🛡️ Security Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔒 Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: 📊 Upload Trivy scan results
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+  # Test documentation builds
+  docs:
+    name: 📚 Documentation
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📝 Validate documentation structure
+        run: |
+          # Check that docs directory exists and has content
+          if [ ! -d "docs" ]; then
+            echo "❌ docs directory not found"
+            exit 1
+          fi
+          
+          # Check for essential documentation files
+          essential_docs=(
+            "docs/ops/scheduling/README.md"
+            "ERIFY_UI_Style_Guide.md"
+          )
+          
+          for doc in "${essential_docs[@]}"; do
+            if [ ! -f "$doc" ]; then
+              echo "❌ Essential documentation missing: $doc"
+              exit 1
+            else
+              echo "✅ Found: $doc"
+            fi
+          done
+
+  # Summary job
+  ci-summary:
+    name: ✅ CI Summary
+    runs-on: ubuntu-latest
+    needs: [validate, lint, links, security, docs]
+    if: always()
+    
+    steps:
+      - name: 📊 CI Results
+        run: |
+          echo "## 💎 ERIFY™ World CI Results"
+          echo "- Validation: ${{ needs.validate.result }}"
+          echo "- Linting: ${{ needs.lint.result }}"
+          echo "- Link Check: ${{ needs.links.result }}"
+          echo "- Security: ${{ needs.security.result }}"
+          echo "- Documentation: ${{ needs.docs.result }}"
+          
+          if [[ "${{ needs.validate.result }}" == "failure" || 
+                "${{ needs.lint.result }}" == "failure" || 
+                "${{ needs.links.result }}" == "failure" || 
+                "${{ needs.security.result }}" == "failure" || 
+                "${{ needs.docs.result }}" == "failure" ]]; then
+            echo "❌ Some checks failed"
+            exit 1
+          else
+            echo "✅ All checks passed! 🎉"
+          fi
