@@ -1,0 +1,119 @@
+name: Combo CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  detect-and-build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Debug - Show directory structure
+        run: |
+          echo "=== Repository structure (depth 3) ==="
+          find . -maxdepth 3 -type f -name "*.json" -o -name "*.js" -o -name "*.ts" | head -20
+          echo ""
+          echo "=== All package.json files found ==="
+          find . -name "package.json" -type f
+          echo ""
+          echo "=== Package.json files within depth 2 (detection scope) ==="
+          find . -mindepth 2 -maxdepth 2 -name "package.json" -type f
+          echo ""
+
+      - name: Detect Node.js project path
+        id: detect
+        run: |
+          # Function to detect Node.js project path
+          detect_project_path() {
+            # Priority 1: Check root directory
+            if [ -f "./package.json" ]; then
+              echo "."
+              return 0
+            fi
+            
+            # Priority 2: Check known subproject (erify-discord)
+            if [ -f "./erify-discord/package.json" ]; then
+              echo "./erify-discord"
+              return 0
+            fi
+            
+            # Priority 3: Find first package.json within depth 2 (as per requirements)
+            local first_package=$(find . -mindepth 2 -maxdepth 2 -name "package.json" -type f | head -1)
+            if [ -n "$first_package" ]; then
+              dirname "$first_package"
+              return 0
+            fi
+            
+            # No package.json found
+            return 1
+          }
+          
+          # Detect the project path
+          if PROJECT_PATH=$(detect_project_path); then
+            echo "has_nodejs=true" >> $GITHUB_OUTPUT
+            echo "project_path=$PROJECT_PATH" >> $GITHUB_OUTPUT
+            echo "✅ Node.js project detected at: $PROJECT_PATH"
+            
+            # Show the detected package.json content
+            echo "=== Package.json content ==="
+            cat "$PROJECT_PATH/package.json"
+          else
+            echo "has_nodejs=false" >> $GITHUB_OUTPUT
+            echo "project_path=" >> $GITHUB_OUTPUT
+            echo "ℹ️  No Node.js project detected - skipping npm steps"
+          fi
+
+      - name: Setup Node.js
+        if: steps.detect.outputs.has_nodejs == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: ${{ steps.detect.outputs.project_path }}/package.json
+
+      - name: Install dependencies
+        if: steps.detect.outputs.has_nodejs == 'true'
+        working-directory: ${{ steps.detect.outputs.project_path }}
+        run: |
+          echo "Installing dependencies in: $(pwd)"
+          npm ci
+
+      - name: Run tests
+        if: steps.detect.outputs.has_nodejs == 'true'
+        working-directory: ${{ steps.detect.outputs.project_path }}
+        run: |
+          echo "Running tests in: $(pwd)"
+          # Check if test script exists in package.json
+          if npm run | grep -q "test"; then
+            npm test
+          else
+            echo "No test script found in package.json - skipping tests"
+          fi
+
+      - name: Run build
+        if: steps.detect.outputs.has_nodejs == 'true'
+        working-directory: ${{ steps.detect.outputs.project_path }}
+        run: |
+          echo "Running build in: $(pwd)"
+          # Check if build script exists in package.json
+          if npm run | grep -q "build"; then
+            npm run build
+          else
+            echo "No build script found in package.json - skipping build"
+          fi
+
+      - name: Summary
+        run: |
+          echo "=== Combo CI Summary ==="
+          if [ "${{ steps.detect.outputs.has_nodejs }}" == "true" ]; then
+            echo "✅ Node.js project found and processed at: ${{ steps.detect.outputs.project_path }}"
+          else
+            echo "ℹ️  No Node.js project found - CI pipeline remained green"
+          fi
+          echo "=== End Summary ==="
