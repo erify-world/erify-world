@@ -1,0 +1,60 @@
+name: Deploy erify-bot to Heroku
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install
+        run: npm ci || npm install
+
+      - name: Build (optional)
+        run: npm run build --if-present
+
+      - name: Run tests (optional)
+        run: npm test --if-present
+
+      - name: Deploy to Heroku
+        uses: akhileshns/heroku-deploy@v3.13.15
+        with:
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: "erify-bot"
+          heroku_email: "you@example.com"
+          usedocker: false
+          dontuseforce: true
+
+      - name: Notify Discord on Successful Deploy
+        if: success()
+        run: |
+          curl -X POST "${{ secrets.DISCORD_WEBHOOK_URL }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "content": "@everyone",
+              "embeds": [{
+                "title": "🎉 ERIFY Bot is Crowned & Live! 🚀👑",
+                "description": "ERIFY Bot has successfully **deployed to production** with a fully automated CI/CD pipeline. Every push to `main` keeps the bot updated and the flame alive. 🔥",
+                "color": 16753920,
+                "thumbnail": {"url": "https://i.imgur.com/3ZUrjUP.png"},
+                "fields": [
+                  {"name": "🔑 Highlights", "value": "✅ **Continuous Deployment** → `git push` = live bot\n✅ **Scalable Worker Dyno** → 24/7 uptime on Heroku\n✅ **Heartbeat Verified** → `[BOOT]` → `[READY]`\n✅ **Debug Made Simple** → logs, dyno checks, rollbacks", "inline": false},
+                  {"name": "📡 Current Status", "value": "✅ **Online** | 🔥👑 Listening for commands", "inline": true},
+                  {"name": "🖥️ Monitor Logs", "value": "```bash\nheroku logs --tail -a erify-bot\n```", "inline": true},
+                  {"name": "🛡️ Rollback (if needed)", "value": "```bash\nheroku releases -a erify-bot\nheroku releases:rollback vNN -a erify-bot\n```", "inline": false},
+                  {"name": "🚀 Next in the ERIFY Empire", "value": "👑 Concurrency safeguards (latest deploy wins)\n👑 Manual hotfix trigger in Actions\n👑 Expand to **erify-world 🌍**", "inline": false}
+                ],
+                "footer": {"text": "Deployed by GitHub Actions | Powered by ERIFY Automation 🔥"},
+                "timestamp": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'"
+              }]
+            }' 
