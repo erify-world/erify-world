@@ -1,0 +1,27 @@
+{
+  "name": "erify-world-discord",
+  "version": "1.0.0",
+  "description": "ERIFY™ Discord Server with Moderation & Add-on Kits",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "deploy:mod": "node moderation/deploy-mod-commands.mjs",
+    "mod:bot": "node moderation/mod-tool.mjs",
+    "deploy:addon": "node addon/deploy-addon-commands.mjs",
+    "addon:bot": "node addon/addon-tool.mjs"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "moderation",
+    "erify"
+  ],
+  "author": "DC ERIFY <hello@erifyworldwide.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@discordjs/rest": "^2.4.0",
+    "discord-api-types": "^0.37.100",
+    "discord.js": "^14.16.3",
+    "dotenv": "^16.6.1"
+  }
+}

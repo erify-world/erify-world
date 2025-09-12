@@ -18,6 +18,12 @@ Founder of **ERIFY™ Technologies** — building a global ecosystem of AI-power
 - **ERIVOX 🗣💠** → Intelligent assistant for voice + text  
 - **ERIFY Wallet 💳** → Secure digital payments and gift cards  
 
+## 🤖 Discord Server Integration
+- **[Discord Kits](./DISCORD_INTEGRATION.md)** → Moderation & Add-on Kits for luxury Discord communities
+- **Role Management** → Interactive ERIFY™ role hierarchy system
+- **Auto-Moderation** → Advanced spam detection and timed moderation
+- **Community Features** → Welcome system, auto-threads, and role selectors
+
 ## 🛠 Operations & Infrastructure
 - **[Cron Scheduling](./docs/ops/scheduling/)** → Ready-to-use templates for Node.js and Cloudflare Workers cron jobs  
 

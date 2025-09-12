@@ -1,0 +1,9 @@
+{
+  "helpDeskChannels": [],
+  "reportChannels": [],
+  "roleSelectors": [],
+  "welcomeConfig": {
+    "enabled": true,
+    "message": "Welcome to ERIFY™ World! 🌍✨\n\nYou've joined a community dedicated to luxury digital experiences and innovation. Here's how to get started:\n\n🔥 **Get your role** in <#role-selector> to access exclusive channels\n🛡️ **Read our guidelines** to understand our community standards\n👑 **Explore** and connect with fellow Citizens and Guardians\n\nFrom the ashes to the stars! 🚀"
+  }
+}
