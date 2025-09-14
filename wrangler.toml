@@ -1,0 +1,148 @@
+# ERIFY™ Worker Configuration
+# Production-ready Cloudflare Worker configuration for wallet telemetry and security
+
+name = "erify-worker"
+main = "src/index.js"
+compatibility_date = "2024-09-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Worker settings
+[placement]
+mode = "smart"
+
+# Environment variables (non-sensitive)
+[vars]
+RATE_LIMIT_RPM = "1000"
+ENVIRONMENT = "production"
+SERVICE_NAME = "ERIFY™ Worker"
+VERSION = "1.0.0"
+
+# D1 Database binding
+[[d1_databases]]
+binding = "DB"
+database_name = "erify-telemetry-db"
+database_id = "your-d1-database-id" # Replace with actual D1 database ID
+
+# KV bindings for caching and session storage
+[[kv_namespaces]]
+binding = "CACHE"
+id = "your-kv-namespace-id" # Replace with actual KV namespace ID
+preview_id = "your-preview-kv-namespace-id" # Replace with preview KV namespace ID
+
+# Analytics Engine for advanced telemetry
+[[analytics_engine_datasets]]
+binding = "ANALYTICS"
+
+# Durable Objects for stateful operations (if needed in future)
+# [[durable_objects.bindings]]
+# name = "WALLET_STATE"
+# class_name = "WalletState"
+
+# Route configuration
+[[routes]]
+pattern = "api.erify.world/*"
+zone_name = "erify.world"
+
+# Custom domains
+# [[routes]]
+# pattern = "worker.erify.world/*"
+# zone_name = "erify.world"
+
+# Cron triggers for maintenance tasks
+[triggers]
+crons = [
+  "0 */6 * * *",    # Cleanup expired nonces every 6 hours
+  "0 2 * * *",      # Daily analytics aggregation at 2 AM
+  "*/15 * * * *"    # Health checks every 15 minutes
+]
+
+# Development configuration
+[env.development]
+name = "erify-worker-dev"
+vars = { RATE_LIMIT_RPM = "100", ENVIRONMENT = "development" }
+
+[[env.development.d1_databases]]
+binding = "DB"
+database_name = "erify-telemetry-db-dev"
+database_id = "your-dev-d1-database-id"
+
+# Staging configuration
+[env.staging]
+name = "erify-worker-staging"
+vars = { RATE_LIMIT_RPM = "500", ENVIRONMENT = "staging" }
+
+[[env.staging.d1_databases]]
+binding = "DB"
+database_name = "erify-telemetry-db-staging"
+database_id = "your-staging-d1-database-id"
+
+# Production configuration
+[env.production]
+name = "erify-worker"
+vars = { RATE_LIMIT_RPM = "1000", ENVIRONMENT = "production" }
+
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "erify-telemetry-db"
+database_id = "your-prod-d1-database-id"
+
+# Security settings
+[limits]
+cpu_ms = 50  # Maximum CPU time per request
+memory_mb = 128  # Maximum memory usage
+
+# Secrets (managed via wrangler secret put)
+# Required secrets:
+# - ERIFY_API_SECRET: HMAC secret for request verification
+# - JWT_SECRET: JWT signing/verification secret
+# - WEBHOOK_SECRET: Secret for webhook verification (if applicable)
+# - EXTERNAL_API_KEY: API key for external service integrations (if applicable)
+
+# Build configuration
+[build]
+command = ""  # No build step needed for JavaScript
+watch_dir = "src"
+
+# Worker configuration for different deployment targets
+[miniflare]
+d1_persist = true
+cache_persist = true
+kv_persist = true
+
+# Performance and reliability settings
+[observability]
+enabled = true
+
+# Custom rules for different request types
+[[rules]]
+type = "*"
+globs = ["**/*"]
+# Additional rules can be added for specific file types or paths
+
+# Tail workers for logging and monitoring (optional)
+# [tail_consumers]
+# [[tail_consumers.bindings]]
+# service = "erify-log-processor"
+
+# Zone configuration for custom domains
+# [zone]
+# account_id = "your-cloudflare-account-id"
+# zone_id = "your-zone-id"
+
+# CORS configuration (handled in worker code for flexibility)
+# [cors]
+# origins = ["https://erify.world", "https://app.erify.world"]
+# methods = ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+# headers = ["Content-Type", "Authorization", "X-Erify-Signature", "X-Erify-Timestamp", "X-Erify-Nonce"]
+
+# Configuration notes:
+# 1. Replace placeholder IDs with actual Cloudflare resource IDs
+# 2. Set up secrets using: wrangler secret put SECRET_NAME
+# 3. Configure custom domains in Cloudflare dashboard
+# 4. Enable Analytics Engine for advanced telemetry collection
+# 5. Set up monitoring and alerting for worker health
+# 6. Configure rate limiting at the zone level for additional protection
+# 7. Enable Bot Management for enhanced security
+# 8. Set up Argo Smart Routing for optimal performance
+# 9. Configure Cache API settings based on your caching strategy
+# 10. Enable Workers Logs for debugging and monitoring
