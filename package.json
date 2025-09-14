@@ -1,0 +1,99 @@
+{
+  "name": "erify-worker",
+  "version": "1.0.0",
+  "description": "ERIFY™ Production-ready Cloudflare Worker for wallet telemetry, security, and scale",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "wrangler dev --env development",
+    "build": "wrangler publish --env development --dry-run",
+    "deploy:dev": "wrangler publish --env development",
+    "deploy:staging": "wrangler publish --env staging",
+    "deploy:prod": "wrangler publish --env production",
+    "test": "npm run test:syntax && npm run test:schema",
+    "test:syntax": "node -c src/index.js",
+    "test:schema": "sqlite3 :memory: < schema.sql",
+    "lint": "eslint src/ --fix || true",
+    "format": "prettier --write src/",
+    "validate": "wrangler validate",
+    "logs": "wrangler tail",
+    "logs:dev": "wrangler tail --env development",
+    "logs:staging": "wrangler tail --env staging",
+    "logs:prod": "wrangler tail --env production",
+    "db:migrate": "wrangler d1 execute erify-telemetry-db --file=./schema.sql",
+    "db:migrate:dev": "wrangler d1 execute erify-telemetry-db-dev --file=./schema.sql --env development",
+    "db:migrate:staging": "wrangler d1 execute erify-telemetry-db-staging --file=./schema.sql --env staging",
+    "db:shell": "wrangler d1 execute erify-telemetry-db --command='.schema'",
+    "secrets:setup": "./set-secrets.sh development",
+    "secrets:list": "wrangler secret list",
+    "status": "wrangler list && wrangler d1 list",
+    "clean": "rm -rf node_modules/.cache .wrangler",
+    "init": "npm run install:global && npm run db:create && npm run secrets:setup && npm run db:migrate:dev",
+    "install:global": "npm install -g wrangler@latest",
+    "db:create": "wrangler d1 create erify-telemetry-db-dev || true",
+    "backup": "wrangler d1 execute erify-telemetry-db --command='.dump' > backups/backup-$(date +%Y%m%d-%H%M%S).sql",
+    "security:scan": "grep -r -E '(sk-|pk_|secret|password|token)' src/ || echo 'No secrets found in code'",
+    "precommit": "npm run lint && npm run test",
+    "prepare": "which wrangler || npm run install:global"
+  },
+  "keywords": [
+    "cloudflare",
+    "workers",
+    "erify",
+    "telemetry",
+    "wallet",
+    "security",
+    "d1",
+    "serverless"
+  ],
+  "author": "ERIFY™ Technologies",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/erify-world/erify-world.git"
+  },
+  "bugs": {
+    "url": "https://github.com/erify-world/erify-world/issues"
+  },
+  "homepage": "https://erify.world",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@commitlint/config-conventional": "^17.0.0",
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0",
+    "wrangler": "^3.0.0"
+  },
+  "optionalDependencies": {
+    "@types/node": "^20.0.0"
+  },
+  "peerDependencies": {
+    "wrangler": "^3.0.0"
+  },
+  "config": {
+    "wrangler": {
+      "default_env": "development"
+    }
+  },
+  "workspaces": [],
+  "files": [
+    "src/",
+    "schema.sql",
+    "wrangler.toml",
+    "Makefile",
+    "set-secrets.sh",
+    "WORKER_README.md"
+  ],
+  "directories": {
+    "lib": "src",
+    "doc": "docs"
+  },
+  "funding": {
+    "type": "individual",
+    "url": "https://github.com/sponsors/erify-world"
+  },
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  }
+}
