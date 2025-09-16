@@ -1,0 +1,72 @@
+name: Slack Notifications - Issues
+
+on:
+  issues:
+    types: [opened, closed, reopened]
+
+jobs:
+  notify-slack-issue:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Slack Notification for Issue Events
+        uses: 8398a7/action-slack@v3
+        with:
+          status: custom
+          custom_payload: |
+            {
+              "text": `:bug: Issue ${{ github.event.action }} in ERIFY World`,
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": `:bug: *Issue ${{ github.event.action }}* in *${{ github.repository }}*"
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Issue Title:*\n${{ github.event.issue.title }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Reporter:*\n${{ github.event.issue.user.login }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Status:*\n${{ github.event.action == 'closed' && '✅ Closed' || '🔄 ' + github.event.action }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Issue Number:*\n#${{ github.event.issue.number }}"
+                    }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Labels:*\n${{ join(github.event.issue.labels.*.name, ', ') || 'None' }}"
+                  }
+                },
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "text": "View Issue"
+                      },
+                      "url": "${{ github.event.issue.html_url }}"
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        if: ${{ secrets.SLACK_WEBHOOK_URL != '' }}

@@ -1,0 +1,73 @@
+name: Slack Notifications - Workflow Completion
+
+on:
+  workflow_run:
+    workflows: ["🧭 Triage", "GitHub Pages", "ERIFY Stream Workflow"]
+    types: [completed]
+
+jobs:
+  notify-slack-workflow:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Slack Notification for Workflow Completion
+        uses: 8398a7/action-slack@v3
+        with:
+          status: custom
+          custom_payload: |
+            {
+              "text": `:gear: Workflow completed in ERIFY World - ${{ github.event.workflow_run.conclusion }}`,
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": `:gear: *Workflow Completed* in *${{ github.repository }}*"
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Workflow:*\n${{ github.event.workflow_run.name }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Status:*\n${{ github.event.workflow_run.conclusion == 'success' && '✅ Success' || github.event.workflow_run.conclusion == 'failure' && '❌ Failed' || github.event.workflow_run.conclusion == 'cancelled' && '⏹️ Cancelled' || '⚠️ ' + github.event.workflow_run.conclusion }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Branch:*\n`${{ github.event.workflow_run.head_branch }}`"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Triggered by:*\n${{ github.event.workflow_run.triggering_actor.login }}"
+                    }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Run ID:* ${{ github.event.workflow_run.id }}\n*Event:* ${{ github.event.workflow_run.event }}"
+                  }
+                },
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "text": "View Workflow Run"
+                      },
+                      "url": "${{ github.event.workflow_run.html_url }}"
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        if: ${{ secrets.SLACK_WEBHOOK_URL != '' }}

@@ -1,0 +1,65 @@
+name: Slack Notifications - Pull Requests
+
+on:
+  pull_request:
+    types: [opened, closed, reopened]
+
+jobs:
+  notify-slack-pr:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Slack Notification for PR Events
+        uses: 8398a7/action-slack@v3
+        with:
+          status: custom
+          custom_payload: |
+            {
+              "text": `:octocat: Pull Request ${{ github.event.action }} in ERIFY World`,
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": `:octocat: *Pull Request ${{ github.event.action }}* in *${{ github.repository }}*`
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*PR Title:*\n${{ github.event.pull_request.title }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Author:*\n${{ github.event.pull_request.user.login }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Status:*\n${{ github.event.action == 'closed' && github.event.pull_request.merged && '✅ Merged' || github.event.action == 'closed' && '❌ Closed' || '🔄 ' + github.event.action }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Branch:*\n`${{ github.event.pull_request.head.ref }}` → `${{ github.event.pull_request.base.ref }}`"
+                    }
+                  ]
+                },
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "text": "View Pull Request"
+                      },
+                      "url": "${{ github.event.pull_request.html_url }}"
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        if: ${{ secrets.SLACK_WEBHOOK_URL != '' }}
