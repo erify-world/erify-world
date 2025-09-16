@@ -1,0 +1,157 @@
+name: 🔔 Slack Notifications
+
+on:
+  issues:
+    types: [opened]
+  pull_request:
+    types: [opened]
+  workflow_run:
+    workflows: ["🧭 Triage", "GitHub Pages", "ERIFY Stream Workflow"]
+    types: [completed]
+
+jobs:
+  notify-new-issue:
+    if: github.event_name == 'issues' && github.event.action == 'opened'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Slack notification for new issue
+        uses: 8398a7/action-slack@v3
+        with:
+          status: custom
+          custom_payload: |
+            {
+              "channel": "#launch-central",
+              "username": "GitHub Bot",
+              "icon_emoji": ":github:",
+              "attachments": [
+                {
+                  "color": "#ff6b6b",
+                  "fallback": "New issue opened: ${{ github.event.issue.title }}",
+                  "author_name": "${{ github.event.issue.user.login }}",
+                  "author_link": "${{ github.event.issue.user.html_url }}",
+                  "author_icon": "${{ github.event.issue.user.avatar_url }}",
+                  "title": "🐛 New Issue: ${{ github.event.issue.title }}",
+                  "title_link": "${{ github.event.issue.html_url }}",
+                  "text": "${{ github.event.issue.body }}",
+                  "fields": [
+                    {
+                      "title": "Repository",
+                      "value": "${{ github.repository }}",
+                      "short": true
+                    },
+                    {
+                      "title": "Issue Number",
+                      "value": "#${{ github.event.issue.number }}",
+                      "short": true
+                    }
+                  ],
+                  "footer": "GitHub",
+                  "footer_icon": "https://github.com/favicon.ico"
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  notify-new-pr:
+    if: github.event_name == 'pull_request' && github.event.action == 'opened'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Slack notification for new pull request
+        uses: 8398a7/action-slack@v3
+        with:
+          status: custom
+          custom_payload: |
+            {
+              "channel": "#launch-central",
+              "username": "GitHub Bot",
+              "icon_emoji": ":github:",
+              "attachments": [
+                {
+                  "color": "#4ecdc4",
+                  "fallback": "New pull request opened: ${{ github.event.pull_request.title }}",
+                  "author_name": "${{ github.event.pull_request.user.login }}",
+                  "author_link": "${{ github.event.pull_request.user.html_url }}",
+                  "author_icon": "${{ github.event.pull_request.user.avatar_url }}",
+                  "title": "🔀 New Pull Request: ${{ github.event.pull_request.title }}",
+                  "title_link": "${{ github.event.pull_request.html_url }}",
+                  "text": "${{ github.event.pull_request.body }}",
+                  "fields": [
+                    {
+                      "title": "Repository",
+                      "value": "${{ github.repository }}",
+                      "short": true
+                    },
+                    {
+                      "title": "PR Number",
+                      "value": "#${{ github.event.pull_request.number }}",
+                      "short": true
+                    },
+                    {
+                      "title": "Base Branch",
+                      "value": "${{ github.event.pull_request.base.ref }}",
+                      "short": true
+                    },
+                    {
+                      "title": "Head Branch",
+                      "value": "${{ github.event.pull_request.head.ref }}",
+                      "short": true
+                    }
+                  ],
+                  "footer": "GitHub",
+                  "footer_icon": "https://github.com/favicon.ico"
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  notify-workflow-completion:
+    if: github.event_name == 'workflow_run' && github.event.workflow_run.conclusion != 'cancelled'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Slack notification for workflow completion
+        uses: 8398a7/action-slack@v3
+        with:
+          status: custom
+          custom_payload: |
+            {
+              "channel": "#launch-central",
+              "username": "GitHub Bot",
+              "icon_emoji": ":github:",
+              "attachments": [
+                {
+                  "color": "${{ github.event.workflow_run.conclusion == 'success' && '#45b7d1' || '#ff6b6b' }}",
+                  "fallback": "Workflow ${{ github.event.workflow_run.name }} ${{ github.event.workflow_run.conclusion }}",
+                  "title": "${{ github.event.workflow_run.conclusion == 'success' && '✅' || '❌' }} Workflow: ${{ github.event.workflow_run.name }}",
+                  "title_link": "${{ github.event.workflow_run.html_url }}",
+                  "text": "Workflow run ${{ github.event.workflow_run.conclusion }} on ${{ github.event.workflow_run.head_branch }} branch",
+                  "fields": [
+                    {
+                      "title": "Repository",
+                      "value": "${{ github.repository }}",
+                      "short": true
+                    },
+                    {
+                      "title": "Status",
+                      "value": "${{ github.event.workflow_run.conclusion }}",
+                      "short": true
+                    },
+                    {
+                      "title": "Branch",
+                      "value": "${{ github.event.workflow_run.head_branch }}",
+                      "short": true
+                    },
+                    {
+                      "title": "Commit",
+                      "value": "${{ github.event.workflow_run.head_sha }}",
+                      "short": true
+                    }
+                  ],
+                  "footer": "GitHub",
+                  "footer_icon": "https://github.com/favicon.ico"
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
