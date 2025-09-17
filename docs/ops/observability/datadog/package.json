@@ -1,0 +1,57 @@
+{
+  "name": "@erify/datadog-client",
+  "version": "1.0.0",
+  "description": "Non-blocking, sampled log streaming client for ERIFY™ OAuth monitoring with Datadog integration",
+  "main": "datadogClient.js",
+  "type": "module",
+  "exports": {
+    ".": "./datadogClient.js"
+  },
+  "scripts": {
+    "test": "node --test test/",
+    "lint": "eslint *.js",
+    "format": "prettier --write *.js",
+    "create-monitors": "./create-datadog-monitors.sh"
+  },
+  "keywords": [
+    "datadog",
+    "logging",
+    "monitoring",
+    "oauth",
+    "observability",
+    "alerting",
+    "metrics",
+    "sampling",
+    "streaming"
+  ],
+  "author": "ERIFY™ Team <dev@erify.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/erify-world/erify-world.git",
+    "directory": "docs/ops/observability/datadog"
+  },
+  "bugs": {
+    "url": "https://github.com/erify-world/erify-world/issues"
+  },
+  "homepage": "https://github.com/erify-world/erify-world/tree/main/docs/ops/observability/datadog",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.50.0",
+    "prettier": "^3.0.0"
+  },
+  "peerDependencies": {
+    "crypto": "*"
+  },
+  "bin": {
+    "create-datadog-monitors": "./create-datadog-monitors.sh"
+  },
+  "files": [
+    "datadogClient.js",
+    "create-datadog-monitors.sh",
+    "integration-guide.md",
+    "README.md"
+  ]
+}
