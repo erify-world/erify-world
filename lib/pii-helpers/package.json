@@ -1,0 +1,51 @@
+{
+  "name": "@erify/pii-helpers",
+  "version": "1.0.0",
+  "description": "PII redaction helpers for ERIFY™ OAuth logs - sanitizes sensitive data for compliance and security",
+  "main": "piiHelpers.js",
+  "type": "module",
+  "exports": {
+    ".": "./piiHelpers.js"
+  },
+  "scripts": {
+    "test": "node --test test/",
+    "lint": "eslint *.js",
+    "format": "prettier --write *.js"
+  },
+  "keywords": [
+    "pii",
+    "redaction",
+    "oauth",
+    "security",
+    "privacy",
+    "gdpr",
+    "compliance",
+    "logging",
+    "sanitization"
+  ],
+  "author": "ERIFY™ Team <dev@erify.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/erify-world/erify-world.git",
+    "directory": "lib/pii-helpers"
+  },
+  "bugs": {
+    "url": "https://github.com/erify-world/erify-world/issues"
+  },
+  "homepage": "https://github.com/erify-world/erify-world/tree/main/lib/pii-helpers",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.50.0",
+    "prettier": "^3.0.0"
+  },
+  "peerDependencies": {
+    "crypto": "*"
+  },
+  "files": [
+    "piiHelpers.js",
+    "README.md"
+  ]
+}
