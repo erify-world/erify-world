@@ -60,7 +60,7 @@ check_file "docs/ops/scheduling/cloudflare-workers/src/worker.ts"
 check_file "docs/ops/scheduling/cloudflare-workers/package.json"
 
 echo -e "\n${BLUE}📄 Validating HTML files...${NC}"
-for html_file in $(find . -name "*.html" -not -path "./node_modules/*"); do
+for html_file in $(find . -name "*.html" -not -path "./node_modules/*" -not -path "./docs/ops/scheduling/cloudflare-workers/node_modules/*"); do
     if grep -q "<!DOCTYPE html>" "$html_file" && grep -q "</html>" "$html_file"; then
         echo -e "${GREEN}✅ Valid HTML: $html_file${NC}"
     else
