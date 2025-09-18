@@ -74,3 +74,33 @@ jobs:
           curl -H "Content-Type: application/json" \
           -d "{\"content\": \"❌ ERIFY™ deploy failed! 🚨\nRepo: ${{ github.repository }}\nBranch: ${{ github.ref_name }}\nActor: ${{ github.actor }}\nLogs: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}" \
           ${{ secrets.DISCORD_WEBHOOK_URL }}
+
+      # ==============================
+      # Global Launch Announcements
+      # ==============================
+      - name: Slack Launch Announcement
+        if: success()
+        uses: slackapi/slack-github-action@v1.27.0
+        with:
+          payload: |
+            {
+              "channel": "#erify-launch",
+              "text": "*ERIFY GLOBAL LAUNCH 🚀*\n\nERIFY app live worldwide!\nDownload now 👉 <https://erify.world/download>"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Discord Launch Announcement
+        if: success()
+        run: |
+          curl -H "Content-Type: application/json" \
+          -d '{
+              "embeds": [{
+                "title": "ERIFY GLOBAL LAUNCH 🚀",
+                "description": "ERIFY app live worldwide!\n\n[📥 Download now](https://erify.world/download)",
+                "color": 5763719,
+                "footer": { "text": "ERIFY Global" },
+                "timestamp": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'"
+              }]
+            }' \
+            ${{ secrets.DISCORD_WEBHOOK_URL }}
