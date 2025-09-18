@@ -1,17 +1,52 @@
-# Cloudflare Workers configuration
+# 🌍 ERIFY™ - Cloudflare Wrangler Config
+# Optimized for static site + future Worker/D1/WASM expansion
 
-# You can define your project here.
-name = "my-project"
-type = "javascript"
+name = "erify-world"
+main = "erify-worker.js"                # Update if your entry script differs
+compatibility_date = "2025-09-18"
 
-# Define the account ID for your Cloudflare account
-account_id = "your-account-id"
+account_id = "023e1059f4c3829d2315"
+zone_id = "06b9469f4c3829d2315a01"
+route = "erifyglobal.com/*"            # Use your production domain
 
-# Specify the zone ID for your domain
-zone_id = "your-zone-id"
+# =========================
+# Environments
+# =========================
+[env.production]
+vars = { NODE_ENV = "production" }
 
-# Define the configuration for your workers
-workers_dev = true
-compatibility_date = "2021-07-01"
+[env.preview]
+vars = { NODE_ENV = "preview" }
 
-# Add any additional settings as needed
+# =========================
+# Build settings
+# =========================
+[build]
+command = "npm run build"
+upload = { dir = "./dist" }             # Change if you output elsewhere (e.g., ./public)
+
+# =========================
+# Database (D1)
+# =========================
+[d1_databases]
+erify_d1 = { binding = "ERIFY_D1", database_id = "0123456789abcdef" }
+
+# =========================
+# WebAssembly (Go/WASM)
+# =========================
+[wasm_modules]
+go_wasm = "./main.wasm"
+
+# =========================
+# Scheduled Tasks
+# =========================
+[triggers]
+crons = ["0 * * * *"]                   # Example: runs hourly
+
+# =========================
+# Optional Future Add-ons
+# =========================
+# [kv_namespaces]
+# [r2_buckets]
+# [queues]
+# [durable_objects]
