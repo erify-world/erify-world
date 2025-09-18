@@ -1,0 +1,168 @@
+---
+name: 🤖 Auto-merge
+
+"on":
+  pull_request_review:
+    types: [submitted]
+  pull_request:
+    types: [ready_for_review]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-merge:
+    # Only run on approved PRs that are not drafts
+    if: >
+      github.event.pull_request.draft == false &&
+      (
+        github.event.review.state == 'approved' ||
+        (github.event_name == 'pull_request' &&
+         github.event.action == 'ready_for_review')
+      ) &&
+      !contains(fromJson('["dependabot[bot]","github-actions[bot]"]'),
+                github.event.pull_request.user.login)
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check if PR is approved
+        id: check-approval
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: reviews } = await github.rest.pulls.listReviews({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number,
+            });
+
+            // Get latest review from each reviewer
+            const latestReviews = reviews.reduce((acc, review) => {
+              acc[review.user.login] = review;
+              return acc;
+            }, {});
+
+            // Check if any reviewer has approved
+            const approved = Object.values(latestReviews).some(review =>
+              review.state === 'APPROVED'
+            );
+
+            // Check if any reviewer has requested changes
+            const changesRequested = Object.values(latestReviews).some(review =>
+              review.state === 'CHANGES_REQUESTED'
+            );
+
+            console.log(`Approved: ${approved}, Changes requested: ${changesRequested}`);
+
+            return {
+              approved: approved,
+              changesRequested: changesRequested,
+              canMerge: approved && !changesRequested
+            };
+
+      - name: Check PR status
+        id: check-status
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: pr } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number,
+            });
+
+            // Check if PR is mergeable
+            const mergeable = pr.mergeable === true;
+            const mergeableState = pr.mergeable_state;
+
+            console.log(`Mergeable: ${mergeable}, State: ${mergeableState}`);
+
+            return {
+              mergeable: mergeable,
+              mergeableState: mergeableState,
+              canProceed: mergeable && mergeableState === 'clean'
+            };
+
+      - name: Auto-merge PR
+        if: >
+          fromJSON(steps.check-approval.outputs.result).canMerge &&
+          fromJSON(steps.check-status.outputs.result).canProceed
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+
+            try {
+              console.log(`Auto-merging PR #${pr.number}: ${pr.title}`);
+
+              const { data: merge } = await github.rest.pulls.merge({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: pr.number,
+                commit_title: `${pr.title} (#${pr.number})`,
+                commit_message: `Auto-merged by GitHub Actions\n\n${pr.body || ''}`,
+                merge_method: 'squash'
+              });
+
+              console.log(`Successfully merged PR #${pr.number}`);
+
+              // Delete the branch after successful merge
+              if (pr.head.ref !== 'main' && pr.head.ref !== 'master') {
+                try {
+                  await github.rest.git.deleteRef({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    ref: `heads/${pr.head.ref}`
+                  });
+                  console.log(`Deleted branch: ${pr.head.ref}`);
+                } catch (deleteError) {
+                  console.log(`Could not delete branch ${pr.head.ref}: ${deleteError.message}`);
+                }
+              }
+
+              // Add success comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr.number,
+                body: '🤖 **Auto-merged successfully!**\n\n✅ PR approved and automatically merged using squash merge\n🗑️ Branch deleted automatically'
+              });
+
+            } catch (error) {
+              console.error(`Failed to auto-merge: ${error.message}`);
+
+              // Add failure comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr.number,
+                body: `🤖 **Auto-merge failed**\n\n❌ Could not auto-merge this PR: ${error.message}\n\nPlease merge manually or resolve any conflicts.`
+              });
+
+              throw error;
+            }
+
+      - name: Skip auto-merge (not approved)
+        if: >
+          !fromJSON(steps.check-approval.outputs.result).canMerge ||
+          !fromJSON(steps.check-status.outputs.result).canProceed
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const approval = ${{ steps.check-approval.outputs.result }};
+            const status = ${{ steps.check-status.outputs.result }};
+
+            let reason = '';
+            if (!approval.approved) {
+              reason = 'PR not yet approved by a reviewer';
+            } else if (approval.changesRequested) {
+              reason = 'Changes requested by a reviewer';
+            } else if (!status.mergeable) {
+              reason = 'PR has merge conflicts or is not mergeable';
+            } else if (status.mergeableState !== 'clean') {
+              reason = `PR status is "${status.mergeableState}" (requires clean status)`;
+            }
+
+            console.log(`Skipping auto-merge: ${reason}`);
