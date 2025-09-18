@@ -1,0 +1,63 @@
+name = "erify-world"
+pages_build_output_dir = "."
+compatibility_date = "2025-09-10"
+compatibility_flags = ["nodejs_compat"]
+
+[env.production]
+name = "erify-world"
+
+[env.production.vars]
+ENVIRONMENT = "production"
+ERIFY_BRAND = "ERIFY™ World"
+SITE_URL = "https://erify-world.pages.dev"
+
+# Build configuration for Pages
+[[pages_build_script]]
+command = "echo 'Static site build complete'"
+
+# Headers for security and performance
+[[headers]]
+for = "/*"
+
+  [headers.values]
+  X-Frame-Options = "DENY"
+  X-Content-Type-Options = "nosniff"
+  X-XSS-Protection = "1; mode=block"
+  Referrer-Policy = "strict-origin-when-cross-origin"
+  Content-Security-Policy = "default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; img-src 'self' data: https:; connect-src 'self'"
+
+# Cache static assets
+[[headers]]
+for = "/styles/*"
+
+  [headers.values]
+  Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+for = "*.css"
+
+  [headers.values]
+  Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+for = "*.js"
+
+  [headers.values]
+  Cache-Control = "public, max-age=31536000, immutable"
+
+# Redirects for better SEO
+[[redirects]]
+from = "/home"
+to = "/"
+status = 301
+
+[[redirects]]
+from = "/index"
+to = "/"
+status = 301
+
+# 404 handling
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 404

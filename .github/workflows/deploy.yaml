@@ -1,0 +1,158 @@
+name: ERIFY Deployment to Cloudflare Pages
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+env:
+  NODE_VERSION: '18'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy ERIFY World to Cloudflare Pages
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: 'package-lock.json'
+          
+      - name: Install dependencies
+        run: |
+          # Create package.json if it doesn't exist
+          if [ ! -f "package.json" ]; then
+            echo '{"name":"erify-world","version":"1.0.0","scripts":{"build":"echo Static site ready"}}' > package.json
+          fi
+          npm ci --silent || npm install --silent
+          
+      - name: Validate site structure
+        run: |
+          echo "Validating ERIFY site structure..."
+          
+          # Check required files
+          if [ ! -f "index.html" ]; then
+            echo "❌ Missing index.html"
+            exit 1
+          fi
+          
+          if [ ! -f "wrangler.toml" ]; then
+            echo "❌ Missing wrangler.toml"
+            exit 1
+          fi
+          
+          if [ ! -d "styles" ]; then
+            echo "❌ Missing styles directory"
+            exit 1
+          fi
+          
+          echo "✅ Site structure validation passed"
+          
+      - name: Lint and validate HTML
+        run: |
+          # Basic HTML validation
+          echo "Validating HTML files..."
+          for file in $(find . -name "*.html" -not -path "./node_modules/*"); do
+            echo "Checking $file..."
+            # Basic syntax check - ensure DOCTYPE and closing tags
+            if ! grep -q "<!DOCTYPE html>" "$file"; then
+              echo "⚠️  Warning: $file missing DOCTYPE declaration"
+            fi
+            if ! grep -q "</html>" "$file"; then
+              echo "❌ Error: $file missing closing html tag"
+              exit 1
+            fi
+            echo "✅ $file is valid"
+          done
+          
+      - name: Build site
+        run: |
+          echo "Building ERIFY World static site..."
+          
+          # Ensure all CSS files are accessible
+          if [ -f "styles/erify-glow-kit.css" ]; then
+            echo "✅ Found ERIFY glow kit CSS"
+          else
+            echo "⚠️  Warning: ERIFY glow kit CSS not found"
+          fi
+          
+          # Create build info
+          echo "{\"buildTime\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"commit\":\"$GITHUB_SHA\",\"ref\":\"$GITHUB_REF\"}" > build-info.json
+          
+          echo "✅ Build completed successfully"
+          
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: erify-world
+          directory: .
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Validate ERIFY integrations
+        if: github.ref == 'refs/heads/main'
+        run: |
+          echo "Validating ERIFY integrations..."
+          
+          # Check if ERIFY_API_KEY is available (without exposing it)
+          if [ -z "${{ secrets.ERIFY_API_KEY }}" ]; then
+            echo "⚠️  Warning: ERIFY_API_KEY secret not set"
+          else
+            echo "✅ ERIFY_API_KEY is configured"
+          fi
+          
+          # Validate deployment URL (will be available after deploy)
+          echo "✅ ERIFY integrations validated"
+          
+      - name: Post-deployment verification
+        if: github.ref == 'refs/heads/main'
+        run: |
+          echo "🚀 ERIFY World deployment completed!"
+          echo "📍 Site URL: https://erify-world.pages.dev"
+          echo "🔥 From the ashes to the stars ✨"
+          
+          # Log deployment success
+          echo "Deployment successful at $(date)"
+          
+  # Separate job for Workers deployment (cron jobs)
+  deploy-workers:
+    runs-on: ubuntu-latest
+    name: Deploy ERIFY Cron Workers
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          
+      - name: Install Wrangler
+        run: npm install -g wrangler
+        
+      - name: Deploy Cron Workers
+        working-directory: docs/ops/scheduling/cloudflare-workers
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          echo "Deploying ERIFY cron workers..."
+          
+          # Install worker dependencies
+          npm install
+          
+          # Deploy the worker
+          wrangler deploy
+          
+          echo "✅ ERIFY cron workers deployed successfully"

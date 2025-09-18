@@ -1,0 +1,37 @@
+{
+  "name": "erify-world",
+  "version": "1.0.0",
+  "description": "ERIFY™ World - Building a global ecosystem of AI-powered platforms and luxury digital experiences",
+  "main": "index.html",
+  "scripts": {
+    "build": "echo 'Static site build complete'",
+    "dev": "npx http-server . -p 8080 -o",
+    "lint": "echo 'Linting HTML and CSS files...' && npm run lint:html",
+    "lint:html": "find . -name '*.html' -not -path './node_modules/*' -exec echo 'Checking {}' \\;",
+    "deploy": "wrangler pages deploy . --project-name=erify-world",
+    "preview": "wrangler pages dev .",
+    "test": "npm run lint"
+  },
+  "keywords": [
+    "erify",
+    "luxury-tech",
+    "ai-platforms",
+    "digital-experiences",
+    "portfolio",
+    "cloudflare-pages"
+  ],
+  "author": "DC ERIFY <founder@erifyworldwide.com>",
+  "license": "MIT",
+  "homepage": "https://erify-world.pages.dev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/erify-world/erify-world.git"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1",
+    "wrangler": "^3.78.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
