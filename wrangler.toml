@@ -1,0 +1,321 @@
+# =============================================================================
+# ERIFY™ World - Production Wrangler Configuration
+# =============================================================================
+# This configuration supports:
+# - Static hosting on Cloudflare Pages for components & styleguide
+# - ERIFY worker scripts for backend operations  
+# - D1 database connectivity for data persistence
+# - API integration keys for external services
+# - Scalable architecture for Workers, D1, and API integrations
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Static Site Configuration (Cloudflare Pages)
+# -----------------------------------------------------------------------------
+name = "erify-world"
+compatibility_date = "2024-09-18"
+compatibility_flags = ["nodejs_compat"]
+
+# Static assets configuration for immediate deployment
+# Using Cloudflare Pages for static hosting
+main = "index.html"
+
+# Worker compatibility and performance settings for future expansion
+# Uncomment and configure when adding Workers functionality:
+# main = "src/worker.js"
+# 
+# [[services]]
+# binding = "ERIFY_API"
+# service = "erify-api-worker"
+# environment = "production"
+
+# -----------------------------------------------------------------------------
+# D1 Database Configuration
+# -----------------------------------------------------------------------------
+# ERIFY D1 database for user data, content, and application state
+[[d1_databases]]
+binding = "ERIFY_DB"
+database_name = "erify-production-db"
+database_id = "your-d1-database-id-here"  # Replace with actual D1 database ID
+migrations_dir = "migrations"
+
+# Additional D1 databases for scaling (uncomment as needed)
+# [[d1_databases]]
+# binding = "ERIFY_ANALYTICS_DB"
+# database_name = "erify-analytics-db"
+# database_id = "your-analytics-db-id-here"
+
+# [[d1_databases]]
+# binding = "ERIFY_CACHE_DB" 
+# database_name = "erify-cache-db"
+# database_id = "your-cache-db-id-here"
+
+# -----------------------------------------------------------------------------
+# KV Storage Configuration (for caching and session storage)
+# -----------------------------------------------------------------------------
+[[kv_namespaces]]
+binding = "ERIFY_CACHE"
+id = "your-kv-namespace-id-here"  # Replace with actual KV namespace ID
+preview_id = "your-kv-preview-id-here"
+
+[[kv_namespaces]]
+binding = "ERIFY_SESSIONS"
+id = "your-sessions-kv-id-here"  # Replace with actual KV namespace ID
+preview_id = "your-sessions-preview-id-here"
+
+# -----------------------------------------------------------------------------
+# Environment Variables & Configuration
+# -----------------------------------------------------------------------------
+[vars]
+# Core ERIFY Configuration
+ENVIRONMENT = "production"
+LOG_LEVEL = "info"
+API_VERSION = "v1"
+ERIFY_DOMAIN = "erify.world"
+
+# Backend API Configuration
+BACKEND_BASE = "https://api.erify.world"
+API_TIMEOUT = "30000"
+RATE_LIMIT_REQUESTS = "1000"
+RATE_LIMIT_WINDOW = "3600"
+
+# Feature Flags
+ENABLE_ANALYTICS = "true"
+ENABLE_CACHING = "true"
+ENABLE_DEBUG_LOGS = "false"
+ENABLE_MAINTENANCE_MODE = "false"
+
+# CORS Configuration
+CORS_ORIGINS = "https://erify.world,https://www.erify.world,https://erifyworldwide.com"
+CORS_METHODS = "GET,POST,PUT,DELETE,OPTIONS"
+CORS_HEADERS = "Content-Type,Authorization,X-Requested-With,X-API-Key"
+
+# Security Headers
+CSP_POLICY = "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.erify.world; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.erify.world"
+FRAME_OPTIONS = "DENY"
+CONTENT_TYPE_OPTIONS = "nosniff"
+
+# -----------------------------------------------------------------------------
+# ERIFY API Integration Keys (Placeholders - Set via Secrets)
+# -----------------------------------------------------------------------------
+# These should be set as secrets using: wrangler secret put <SECRET_NAME>
+# 
+# Core ERIFY Services:
+# - ERIFY_API_KEY: Main API authentication key
+# - ERIFY_JWT_SECRET: JWT signing secret for authentication
+# - ERIFY_ENCRYPTION_KEY: Data encryption key
+#
+# External API Integrations:
+# - STRIPE_API_KEY: Stripe payment processing
+# - STRIPE_WEBHOOK_SECRET: Stripe webhook validation
+# - CIRCLE_API_KEY: Circle USDT/crypto operations
+# - DISCORD_BOT_TOKEN: Discord bot integration
+# - DISCORD_CLIENT_SECRET: Discord OAuth
+# - OPENAI_API_KEY: AI/ML services integration
+# - CLOUDFLARE_API_TOKEN: Cloudflare API operations
+# - SENDGRID_API_KEY: Email service integration
+#
+# Database & Analytics:
+# - DATABASE_URL: Primary database connection
+# - REDIS_URL: Redis cache connection
+# - ANALYTICS_TOKEN: Analytics service token
+#
+# Social Media Integration:
+# - TWITTER_API_KEY: Twitter API access
+# - TWITTER_API_SECRET: Twitter API secret
+# - INSTAGRAM_API_KEY: Instagram API access
+#
+# Media & Content:
+# - CLOUDFLARE_STREAM_TOKEN: Stream API for media
+# - AWS_ACCESS_KEY_ID: AWS services (if needed)
+# - AWS_SECRET_ACCESS_KEY: AWS services (if needed)
+
+# -----------------------------------------------------------------------------
+# Cron Triggers for Scheduled Operations (for Workers)
+# -----------------------------------------------------------------------------
+# Uncomment when implementing scheduled workers:
+# [triggers]
+# crons = [
+#   "*/5 * * * *",    # Every 5 minutes: Health checks and cache refresh
+#   "0 */6 * * *",    # Every 6 hours: Data synchronization
+#   "0 2 * * *",      # Daily at 2 AM: Database cleanup and analytics
+#   "0 0 * * 0"       # Weekly on Sunday: Full system maintenance
+# ]
+
+# -----------------------------------------------------------------------------
+# Durable Objects Configuration (for stateful operations)
+# -----------------------------------------------------------------------------
+[[durable_objects.bindings]]
+name = "ERIFY_USER_SESSIONS"
+class_name = "UserSessionManager"
+script_name = "erify-session-worker"
+
+[[durable_objects.bindings]]
+name = "ERIFY_CHAT_ROOMS"
+class_name = "ChatRoomManager" 
+script_name = "erify-chat-worker"
+
+# -----------------------------------------------------------------------------
+# Queue Configuration (for background job processing) - Future expansion
+# Uncomment when implementing background job processing:
+# [[queues.producers]]
+# binding = "ERIFY_JOBS_QUEUE"
+# queue = "erify-background-jobs"
+# 
+# [[queues.producers]]  
+# binding = "ERIFY_NOTIFICATIONS_QUEUE"
+# queue = "erify-notifications"
+
+# -----------------------------------------------------------------------------
+# R2 Storage Configuration (for file uploads and media)
+# -----------------------------------------------------------------------------
+[[r2_buckets]]
+binding = "ERIFY_MEDIA"
+bucket_name = "erify-media-production"
+preview_bucket_name = "erify-media-preview"
+
+[[r2_buckets]]
+binding = "ERIFY_UPLOADS"
+bucket_name = "erify-uploads-production"
+preview_bucket_name = "erify-uploads-preview"
+
+# -----------------------------------------------------------------------------
+# Analytics Engine Configuration
+# -----------------------------------------------------------------------------
+[[analytics_engine_datasets]]
+binding = "ERIFY_ANALYTICS"
+dataset = "erify_analytics_production"
+
+# -----------------------------------------------------------------------------
+# Browser Rendering Configuration (for screenshots, PDFs, etc.) - Future expansion
+# Uncomment when implementing browser automation:
+# [browser]
+# binding = "BROWSER"
+
+# -----------------------------------------------------------------------------
+# Vectorize Configuration (for AI/ML embeddings and search)
+# -----------------------------------------------------------------------------
+[[vectorize]]
+binding = "ERIFY_EMBEDDINGS"
+index_name = "erify-content-embeddings"
+
+# -----------------------------------------------------------------------------
+# Hyperdrive Configuration (for database connection pooling)
+# -----------------------------------------------------------------------------
+[[hyperdrive]]
+binding = "ERIFY_DB_POOL"
+id = "your-hyperdrive-id-here"  # Replace with actual Hyperdrive ID
+
+# -----------------------------------------------------------------------------
+# AI Configuration (Cloudflare AI/Workers AI)
+# -----------------------------------------------------------------------------
+[ai]
+binding = "AI"
+
+# -----------------------------------------------------------------------------
+# Build Configuration - For static hosting
+# -----------------------------------------------------------------------------
+# Uncomment when building from source:
+# [build]
+# command = "npm run build"
+# cwd = "."
+
+# -----------------------------------------------------------------------------
+# Development Configuration
+# -----------------------------------------------------------------------------
+[env.development]
+name = "erify-world-dev"
+vars = { ENVIRONMENT = "development", LOG_LEVEL = "debug", ENABLE_DEBUG_LOGS = "true" }
+
+[env.development.d1_databases]
+binding = "ERIFY_DB"
+database_name = "erify-development-db"
+database_id = "your-dev-d1-database-id-here"
+
+# -----------------------------------------------------------------------------
+# Staging Configuration  
+# -----------------------------------------------------------------------------
+[env.staging]
+name = "erify-world-staging"
+vars = { ENVIRONMENT = "staging", LOG_LEVEL = "info", ENABLE_DEBUG_LOGS = "false" }
+
+[env.staging.d1_databases]
+binding = "ERIFY_DB"
+database_name = "erify-staging-db"
+database_id = "your-staging-d1-database-id-here"
+
+# -----------------------------------------------------------------------------
+# Future Scaling Considerations
+# -----------------------------------------------------------------------------
+#
+# 1. Multi-Region Deployment:
+#    - Configure multiple environments for different regions
+#    - Use Cloudflare's global network for low-latency access
+#    - Implement geo-routing for optimized performance
+#
+# 2. Microservices Architecture:
+#    - Split functionality into separate workers
+#    - Use Service Bindings for inter-worker communication
+#    - Implement proper service discovery and routing
+#
+# 3. Advanced Database Scaling:
+#    - Multiple D1 databases for different domains (users, content, analytics)
+#    - Read replicas for improved performance
+#    - Database sharding strategies for large-scale data
+#
+# 4. Enhanced Security:
+#    - mTLS for service-to-service communication
+#    - Advanced WAF rules and DDoS protection
+#    - Regular security audits and compliance checks
+#
+# 5. Monitoring and Observability:
+#    - Custom metrics and dashboards
+#    - Distributed tracing for complex requests
+#    - Real-time alerting and incident response
+#
+# 6. Performance Optimization:
+#    - Edge-side caching strategies
+#    - Content optimization and compression
+#    - Smart routing and load balancing
+#
+# 7. API Gateway Pattern:
+#    - Centralized API management
+#    - Rate limiting and throttling
+#    - API versioning and deprecation strategies
+#
+# 8. Event-Driven Architecture:
+#    - Message queues for async processing
+#    - Event sourcing for audit trails
+#    - Real-time updates via WebSockets
+#
+# -----------------------------------------------------------------------------
+# Usage Instructions
+# -----------------------------------------------------------------------------
+#
+# 1. Initial Setup:
+#    wrangler login
+#    wrangler kv:namespace create ERIFY_CACHE
+#    wrangler kv:namespace create ERIFY_SESSIONS
+#    wrangler d1 create erify-production-db
+#
+# 2. Set Secrets:
+#    wrangler secret put ERIFY_API_KEY
+#    wrangler secret put ERIFY_JWT_SECRET
+#    wrangler secret put STRIPE_API_KEY
+#    # ... add other secrets as needed
+#
+# 3. Deploy:
+#    wrangler deploy                    # Deploy to production
+#    wrangler deploy --env development  # Deploy to development
+#    wrangler deploy --env staging      # Deploy to staging
+#
+# 4. Database Management:
+#    wrangler d1 migrations apply erify-production-db
+#    wrangler d1 execute erify-production-db --file=schema.sql
+#
+# 5. Monitoring:
+#    wrangler tail                      # View real-time logs
+#    wrangler kv:key list --binding=ERIFY_CACHE
+#    wrangler d1 execute erify-production-db --command="SELECT COUNT(*) FROM users"
+#
+# =============================================================================
