@@ -1,0 +1,17 @@
+# Cloudflare Workers configuration
+
+# You can define your project here.
+name = "my-project"
+type = "javascript"
+
+# Define the account ID for your Cloudflare account
+account_id = "your-account-id"
+
+# Specify the zone ID for your domain
+zone_id = "your-zone-id"
+
+# Define the configuration for your workers
+workers_dev = true
+compatibility_date = "2021-07-01"
+
+# Add any additional settings as needed
