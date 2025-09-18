@@ -1,6 +1,14 @@
-# Cloudflare Workers Cron Template
+# 💎🔥 ERIFY™ Cloudflare Workers - Audit Logging Cron Template
 
 Workers can't run your local Django commands. Pattern: expose internal secure HTTP endpoints (in your Django/Backend) and have Workers call them on schedule with a secret token. This keeps the serverless scheduler + your existing app logic.
+
+## ✨ ERIFY™ Features
+
+- **🔍 Audit Logging Enabled**: Complete transparency with luxury-grade logging
+- **🔄 3-Attempt Retry Logic**: Enterprise reliability with exponential backoff
+- **⚡ Batching Disabled**: Immediate processing for real-time results
+- **⏰ Hourly Schedule**: Optimized for performance and cost efficiency
+- **💎 ERIFY™ Branding**: Luxury automation with ecosystem integration
 
 ## Files
 
@@ -27,11 +35,16 @@ When prompted, enter your secure token that your Django backend will validate.
 
 ### 3. Update Configuration
 
-Edit `wrangler.toml` to set your backend URL:
+Edit `wrangler.toml` to set your backend URL and ERIFY™ configuration:
 
 ```toml
 [vars]
-BACKEND_BASE = "https://your-actual-backend.com"
+BACKEND_BASE = "https://api.erify.example"      # Your ERIFY™ backend API
+AUDIT_LOGGING_ENABLED = "true"                # Enable audit logging
+RETRY_ATTEMPTS = "3"                           # Retry attempts for reliability
+BATCHING_ENABLED = "false"                     # Disable batching for immediate processing
+TASK_NAME = "ERIFY Audit Logging"             # Task metadata name
+TASK_DESCRIPTION = "Hourly audit log updates for ERIFY."  # Task description
 ```
 
 ### 4. Deploy
@@ -46,12 +59,17 @@ You'll need to create secure HTTP endpoints in your Django backend that correspo
 
 ### URL Mapping
 
-| Worker Path | Django Management Command |
-|-------------|---------------------------|
-| `POST /cron/ee-recent` | `manage.py uk_create_elections_from_every_election --recently-updated` |
-| `POST /cron/parties-import` | `manage.py parties_import_from_ec --post-to-slack` |
-| `POST /cron/check-current` | `manage.py uk_create_elections_from_every_election --check-current` |
-| `POST /cron/mop-recent?delta=25` | `manage.py uk_create_elections_from_every_election --recently-updated --recently-updated-delta 25` |
+| Worker Path | ERIFY™ Backend Command | Schedule |
+|-------------|------------------------|----------|
+| `POST /cron/audit-logging` | Audit logging updates | Every 1 hour |
+
+### ERIFY™ Audit Logging Configuration
+
+The worker is configured to run **hourly audit logging** with the following features:
+- **Retry Logic**: Up to 3 attempts with exponential backoff
+- **Immediate Processing**: Batching disabled for real-time updates  
+- **Enhanced Logging**: Full audit trail with ERIFY™ branding
+- **Task Metadata**: Includes task name and description
 
 ### Django Views Example
 
