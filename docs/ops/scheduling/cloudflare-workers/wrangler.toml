@@ -1,17 +1,97 @@
+# ERIFY™ Production Cloudflare Workers Cron Configuration
+# Hardened setup with environment separation and production-ready settings
+
 name = "erify-cron-workers"
 main = "src/worker.ts"
-compatibility_date = "2025-09-10"
+compatibility_date = "2024-09-10"
+# Unbound usage model for production reliability and performance
+usage_model = "unbound"
 
+# Production environment configuration
+[env.production]
+name = "erify-cron-workers-prod"
+# UTC-adjusted cron schedules for consistent global execution
+[env.production.triggers]
+crons = [
+  "*/5 * * * *",   # Every 5 minutes: EE recently-updated elections (UTC)
+  "6 2 * * *",     # Daily at 02:06 UTC: Import parties from Electoral Commission
+  "23 23 * * *",   # Daily at 23:23 UTC: Check current elections status
+  "33 23 * * *"    # Daily at 23:33 UTC: Mop up missed elections (delta=25)
+]
+
+[env.production.vars]
+BACKEND_BASE = "https://api.erify.world"
+ENVIRONMENT = "production"
+LOG_LEVEL = "info"
+RETRY_MAX_ATTEMPTS = "3"
+RETRY_INITIAL_DELAY = "1000"
+REQUEST_TIMEOUT = "30000"
+
+# Staging environment configuration
+[env.staging]
+name = "erify-cron-workers-staging"
+# Reduced frequency for staging to save resources
+[env.staging.triggers]
+crons = [
+  "*/15 * * * *",  # Every 15 minutes: EE recently-updated (staging)
+  "6 3 * * *",     # Daily at 03:06 UTC: Import parties (staging offset)
+  "23 0 * * *",    # Daily at 00:23 UTC: Check current elections (staging)
+  "33 0 * * *"     # Daily at 00:33 UTC: Mop up missed (staging)
+]
+
+[env.staging.vars]
+BACKEND_BASE = "https://api-staging.erify.world"
+ENVIRONMENT = "staging"
+LOG_LEVEL = "debug"
+RETRY_MAX_ATTEMPTS = "2"
+RETRY_INITIAL_DELAY = "500"
+REQUEST_TIMEOUT = "20000"
+
+# Development environment configuration
+[env.development]
+name = "erify-cron-workers-dev"
+# Minimal cron triggers for development
+[env.development.triggers]
+crons = [
+  "0 */6 * * *"    # Every 6 hours: Basic health check for dev
+]
+
+[env.development.vars]
+BACKEND_BASE = "http://localhost:8000"
+ENVIRONMENT = "development"
+LOG_LEVEL = "debug"
+RETRY_MAX_ATTEMPTS = "1"
+RETRY_INITIAL_DELAY = "100"
+REQUEST_TIMEOUT = "10000"
+
+# Default configuration (fallback to development)
 [triggers]
 crons = [
-  "*/5 * * * *",   # EE recently-updated
-  "6 2 * * *",     # Parties from EC
-  "23 23 * * *",   # Check current elections
-  "33 23 * * *"    # Mop up missed
-  # Minute-level tasks are not ideal on free plans; consider batching
+  "0 */6 * * *"    # Every 6 hours: Basic health check for default
 ]
 
 [vars]
-BACKEND_BASE = "https://api.erify.example" # your backend
-# Create this in dashboard > Workers > KV/Vars or Secrets:
-# ERIFY_CRON_TOKEN (secret)
+BACKEND_BASE = "http://localhost:8000"
+ENVIRONMENT = "development"
+LOG_LEVEL = "debug"
+RETRY_MAX_ATTEMPTS = "1"
+RETRY_INITIAL_DELAY = "100"
+REQUEST_TIMEOUT = "10000"
+
+# Required Secrets (add via Cloudflare Dashboard or wrangler CLI):
+# - ERIFY_CRON_TOKEN: Backend authentication bearer token
+#   Example: wrangler secret put ERIFY_CRON_TOKEN --env production
+#
+# Optional Secrets for enhanced logging/monitoring:
+# - ANALYTICS_TOKEN: Custom analytics endpoint token
+# - SLACK_WEBHOOK_URL: For error notifications
+# - LOGPUSH_TOKEN: Cloudflare Logpush integration
+
+# Optional: Queue configuration for reliable job processing
+# [queues]
+# consumers = [
+#   { queue = "erify-cron-queue", max_batch_size = 10, max_batch_timeout = 30 }
+# ]
+# producers = [
+#   { queue = "erify-cron-queue", binding = "CRON_QUEUE" }
+# ]
