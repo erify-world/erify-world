@@ -1,0 +1,20 @@
+# Azure deployment artifacts
+*.azureauth
+.azure/
+deployment-*.json
+deployment-*.log
+
+# Local environment files
+.env.local
+.env.azure
+.env.production
+
+# Azure CLI cache
+.azure-cli/
+
+# Bicep build outputs
+*.json.bak
+
+# Temporary deployment files
+temp-*
+tmp-*
