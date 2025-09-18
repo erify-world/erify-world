@@ -20,6 +20,7 @@ Founder of **ERIFY™ Technologies** — building a global ecosystem of AI-power
 
 ## 🛠 Operations & Infrastructure
 - **[Cron Scheduling](./docs/ops/scheduling/)** → Ready-to-use templates for Node.js and Cloudflare Workers cron jobs  
+- **[Azure Templates](./azure-templates/)** → ARM and Bicep templates for Azure infrastructure deployment  
 
 ---
 
