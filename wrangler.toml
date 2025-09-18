@@ -1,0 +1,34 @@
+name = "erify-world"
+compatibility_date = "2025-09-18"
+
+# Main production deploy (default: main branch)
+[deploy]
+command = "npx wrangler deploy"
+
+# Preview deploy for non-main branches/PRs
+[env.preview]
+command = "npx wrangler deploy --env preview"
+
+# Environment variables for production
+[vars]
+NODE_ENV = "production"
+ERIFY_API_KEY = "<your-erify-api-key>"
+
+# Uncomment below if static files are in a subfolder
+# [site]
+# bucket = "./public"
+
+# Worker scripts configuration
+[workers]
+main = "./src/worker.js"  # Path to ERIFY worker script
+
+# D1 database connection
+[d1_databases]
+erify_db = "erify-d1"
+
+# Build caching enabled for fast redeploys
+[build]
+cache = true
+
+# API Token: Set in Cloudflare dashboard (not in this file for security)
+# Required scopes: Workers Scripts:Edit + Workers KV Storage:Edit
