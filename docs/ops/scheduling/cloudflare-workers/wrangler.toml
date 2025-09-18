@@ -1,17 +1,41 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# 💎🔥 ERIFY™ CLOUDFLARE WORKERS - LUXURY AUDIT LOGGING CONFIGURATION 🔥💎
+# ═══════════════════════════════════════════════════════════════════════════════
+# 
+# ERIFY™ — "Where the Best Become Legendary."
+# Powered by luxury automation, powered by AI-driven excellence.
+# This configuration enables premium audit logging with enterprise-grade reliability.
+#
+# 🌟 FEATURES:
+# • Audit logging enabled for complete transparency
+# • 3-attempt retry logic for maximum reliability  
+# • Batching disabled for immediate processing
+# • Hourly execution for optimal performance
+# • ERIFY™ ecosystem integration
+# ═══════════════════════════════════════════════════════════════════════════════
+
 name = "erify-cron-workers"
 main = "src/worker.ts"
 compatibility_date = "2025-09-10"
 
+# 🚀 ERIFY™ Audit Logging Task Configuration
+# Task Name: "ERIFY Audit Logging"
+# Description: "Hourly audit log updates for ERIFY."
 [triggers]
 crons = [
-  "*/5 * * * *",   # EE recently-updated
-  "6 2 * * *",     # Parties from EC
-  "23 23 * * *",   # Check current elections
-  "33 23 * * *"    # Mop up missed
-  # Minute-level tasks are not ideal on free plans; consider batching
+  "0 * * * *"      # Every 1 hour - ERIFY Audit Logging
 ]
 
+# 💎 ERIFY™ Luxury Configuration Settings
 [vars]
-BACKEND_BASE = "https://api.erify.example" # your backend
-# Create this in dashboard > Workers > KV/Vars or Secrets:
-# ERIFY_CRON_TOKEN (secret)
+BACKEND_BASE = "https://api.erify.example" # ERIFY™ Backend API
+ENVIRONMENT = "production"
+LOG_LEVEL = "info"
+AUDIT_LOGGING_ENABLED = "true"        # 🔍 Audit logging functionality enabled
+RETRY_ATTEMPTS = "3"                  # 🔄 Retry logic set to 3 attempts
+BATCHING_ENABLED = "false"            # 🚫 Batching explicitly disabled
+TASK_NAME = "ERIFY Audit Logging"     # 📋 Task name metadata
+TASK_DESCRIPTION = "Hourly audit log updates for ERIFY."  # 📝 Task description metadata
+
+# 🔐 Create secrets in Cloudflare Dashboard > Workers > KV/Vars or Secrets:
+# ERIFY_CRON_TOKEN (secret) - Authentication token for ERIFY™ backend
