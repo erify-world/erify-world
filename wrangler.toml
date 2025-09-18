@@ -1,0 +1,222 @@
+# ==================================================================================
+# ERIFY™ World - Production Wrangler Configuration
+# ==================================================================================
+# This configuration is production-ready for Cloudflare Pages static hosting
+# with future-proof options for Workers, D1 databases, and API integrations.
+# 
+# Deployment: `wrangler pages deploy` or connect via Cloudflare Dashboard
+# Documentation: https://developers.cloudflare.com/wrangler/configuration/
+# ==================================================================================
+
+# Main project configuration
+name = "erify-world"
+compatibility_date = "2024-09-18"
+account_id = "" # Add your Cloudflare account ID here
+
+# ==================================================================================
+# STATIC SITE CONFIGURATION (Cloudflare Pages)
+# ==================================================================================
+# For static hosting of ERIFY™ World components, styleguide, and documentation
+
+[pages]
+# Static assets directory - adjust as needed for your build output
+dir = "."
+# Exclude development files and documentation from deployment
+exclude = [
+  "docs/",
+  "issues/", 
+  "discussions/",
+  "checklists/",
+  ".git/",
+  ".github/",
+  "*.md",
+  "*.toml",
+  "package*.json",
+  "node_modules/"
+]
+
+# ==================================================================================
+# WORKERS CONFIGURATION
+# ==================================================================================
+# Enable this section when you're ready to deploy ERIFY Workers
+# Uncomment and configure as needed for your specific worker scripts
+
+# [[workers]]
+# name = "erify-api-worker"
+# script = "src/workers/api-worker.js"
+# compatibility_date = "2024-09-18"
+
+# [[workers]]
+# name = "erify-auth-worker" 
+# script = "src/workers/auth-worker.js"
+# compatibility_date = "2024-09-18"
+
+# [[workers]]
+# name = "erify-cron-worker"
+# script = "src/workers/cron-worker.js"
+# compatibility_date = "2024-09-18"
+
+# # Example cron triggers for ERIFY background tasks
+# [triggers]
+# crons = [
+#   "*/5 * * * *",   # ERIFY data sync every 5 minutes
+#   "0 6 * * *",     # Daily ERIFY analytics at 6 AM UTC
+#   "0 0 1 * *"      # Monthly ERIFY reports on 1st of month
+# ]
+
+# ==================================================================================
+# D1 DATABASE CONFIGURATION
+# ==================================================================================
+# Configure your ERIFY D1 databases here
+# Create databases: `wrangler d1 create <database-name>`
+
+# [[d1_databases]]
+# binding = "ERIFY_DB"
+# database_name = "erify-production"
+# database_id = "" # Add your D1 database ID here
+
+# [[d1_databases]] 
+# binding = "ERIFY_ANALYTICS_DB"
+# database_name = "erify-analytics"
+# database_id = "" # Add your D1 analytics database ID here
+
+# [[d1_databases]]
+# binding = "ERIFY_USER_DB" 
+# database_name = "erify-users"
+# database_id = "" # Add your D1 user database ID here
+
+# ==================================================================================
+# ENVIRONMENT VARIABLES
+# ==================================================================================
+# Configure API keys, endpoints, and feature flags for ERIFY™ ecosystem
+
+[vars]
+# ERIFY API Configuration
+ERIFY_API_BASE = "https://api.erify.world"
+ERIFY_VERSION = "v3"
+ENVIRONMENT = "production"
+
+# Feature Flags
+ERIFY_FEATURES_ENABLED = "true"
+ERIVOX_ENABLED = "true"
+AVERIZY_ENABLED = "true" 
+FLAME_FEED_ENABLED = "true"
+ERIFY_WALLET_ENABLED = "true"
+
+# Integration URLs
+ERIFY_WEBSITE_URL = "https://erifyworldwide.com"
+ERIFY_DASHBOARD_URL = "https://dashboard.erify.world"
+ERIFY_DOCS_URL = "https://docs.erify.world"
+
+# Analytics & Monitoring
+LOG_LEVEL = "info"
+ANALYTICS_ENABLED = "true"
+MONITORING_ENABLED = "true"
+
+# Social & Community
+ERIFY_TWITTER = "https://x.com/erifyteam"
+ERIFY_YOUTUBE = "https://www.youtube.com/@erifyworld"
+ERIFY_DISCORD = "" # Add your Discord invite link
+
+# CORS & Security
+CORS_ORIGINS = "https://erifyworldwide.com,https://dashboard.erify.world"
+RATE_LIMIT_ENABLED = "true"
+
+# ==================================================================================
+# SECRETS CONFIGURATION
+# ==================================================================================
+# Use `wrangler secret put <SECRET_NAME>` to set these securely
+# DO NOT add actual secret values to this file
+
+# Required secrets to set via CLI:
+# - ERIFY_API_KEY: Main API authentication key
+# - ERIFY_CRON_TOKEN: Authentication for scheduled tasks
+# - ERIFY_WEBHOOK_SECRET: For secure webhook validation
+# - ERIFY_JWT_SECRET: For JWT token signing
+# - ERIFY_STRIPE_KEY: For payment processing (if using Stripe)
+# - ERIFY_OPENAI_KEY: For AI features (if using OpenAI)
+
+# Example commands to set secrets:
+# wrangler secret put ERIFY_API_KEY
+# wrangler secret put ERIFY_CRON_TOKEN  
+# wrangler secret put ERIFY_WEBHOOK_SECRET
+# wrangler secret put ERIFY_JWT_SECRET
+
+# ==================================================================================
+# KV STORAGE CONFIGURATION  
+# ==================================================================================
+# Configure KV namespaces for caching and session storage
+
+# [[kv_namespaces]]
+# binding = "ERIFY_CACHE"
+# id = "" # Add your KV namespace ID here
+
+# [[kv_namespaces]]
+# binding = "ERIFY_SESSIONS"
+# id = "" # Add your KV namespace ID for sessions
+
+# ==================================================================================
+# R2 STORAGE CONFIGURATION
+# ==================================================================================
+# Configure R2 buckets for file storage and media hosting
+
+# [[r2_buckets]]
+# binding = "ERIFY_MEDIA"
+# bucket_name = "erify-media-production"
+
+# [[r2_buckets]]
+# binding = "ERIFY_ASSETS"
+# bucket_name = "erify-assets-production"
+
+# ==================================================================================
+# DEPLOYMENT SETTINGS
+# ==================================================================================
+
+# Custom domains (configure via Cloudflare Dashboard)
+# routes = [
+#   { pattern = "api.erify.world/*", zone_name = "erify.world" },
+#   { pattern = "erifyworldwide.com/*", zone_name = "erifyworldwide.com" }
+# ]
+
+# ==================================================================================
+# DEVELOPMENT CONFIGURATION
+# ==================================================================================
+# Settings for local development with `wrangler dev`
+
+[dev]
+# Local development port
+port = 8787
+# Enable local persistence for D1/KV during development
+local_protocol = "https"
+
+# ==================================================================================
+# ERIFY TEAM USAGE GUIDE
+# ==================================================================================
+#
+# QUICK START:
+# 1. Replace account_id with your Cloudflare account ID
+# 2. Deploy static site: `wrangler pages deploy`
+# 3. Set up custom domain in Cloudflare Dashboard
+#
+# ENABLE WORKERS:
+# 1. Uncomment [[workers]] sections above
+# 2. Create your worker scripts in src/workers/
+# 3. Deploy: `wrangler deploy`
+#
+# ENABLE D1 DATABASES:
+# 1. Create databases: `wrangler d1 create erify-production`
+# 2. Copy database IDs to [[d1_databases]] sections above
+# 3. Uncomment the database configurations
+#
+# ENABLE API INTEGRATIONS:
+# 1. Set secrets: `wrangler secret put ERIFY_API_KEY`
+# 2. Update ERIFY_API_BASE in [vars] section
+# 3. Configure authentication in your worker scripts
+#
+# ADVANCED FEATURES:
+# - KV Storage: Uncomment [[kv_namespaces]] for caching
+# - R2 Storage: Uncomment [[r2_buckets]] for file uploads
+# - Custom Domains: Configure routes for production domains
+#
+# For questions: https://docs.erify.world or ERIFY team Discord
+# ==================================================================================
