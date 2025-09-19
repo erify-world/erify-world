@@ -12,4 +12,359 @@
   --erify-warning: #F39C12;
   --erify-danger: #E63946;
 }
-/* Add full Glow Kit component CSS here for production use */
+
+/* Base Styles */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--erify-black);
+  color: var(--erify-text);
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+}
+
+/* Typography */
+.display {
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--erify-text);
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  color: var(--erify-text-muted);
+  font-weight: 400;
+}
+
+.caption {
+  font-size: 0.8rem;
+  color: var(--erify-text-muted);
+  font-weight: 400;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  border-radius: 999px;
+  border: none;
+  font-size: 1rem;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-height: 44px;
+  min-width: 44px;
+  gap: 0.5rem;
+}
+
+.btn:focus {
+  outline: 2px solid var(--erify-blue-electric);
+  outline-offset: 2px;
+  box-shadow: 0 0 10px var(--erify-blue-electric);
+}
+
+.btn--glow {
+  background: linear-gradient(135deg, var(--erify-blue) 0%, var(--erify-blue-electric) 100%);
+  color: var(--erify-black);
+  box-shadow: 0 0 18px 4px var(--erify-blue), 0 0 28px 10px var(--erify-orange-warm);
+}
+
+.btn--glow:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 24px 6px var(--erify-blue), 0 0 36px 12px var(--erify-orange-warm);
+}
+
+.btn--glow:active {
+  transform: scale(0.98);
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--erify-text);
+  border: 2px solid var(--erify-elev-2);
+}
+
+.btn--ghost:hover {
+  border-color: var(--erify-blue);
+  box-shadow: 0 0 10px 2px var(--erify-blue);
+  transform: scale(1.03);
+}
+
+.btn--danger {
+  background: var(--erify-danger);
+  color: white;
+}
+
+.btn--danger:hover {
+  background: #d63031;
+  transform: scale(1.03);
+}
+
+.btn-icon {
+  padding: 0.5rem;
+  border-radius: 50%;
+  background: var(--erify-elev-1);
+  border: none;
+  color: var(--erify-text);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-play {
+  background: linear-gradient(135deg, var(--erify-orange) 0%, var(--erify-orange-warm) 100%);
+  box-shadow: 0 0 18px 4px var(--erify-orange);
+}
+
+.btn-play:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 24px 6px var(--erify-orange);
+}
+
+/* Cards */
+.card {
+  background: var(--erify-elev-1);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.card--glow {
+  box-shadow: 0 0 10px 2px var(--erify-blue);
+}
+
+.card--glow:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 18px 4px var(--erify-blue);
+}
+
+.card__cover {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.card__body {
+  padding: 1rem;
+}
+
+.card__title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  color: var(--erify-text);
+}
+
+.card__subtitle {
+  font-size: 0.875rem;
+  color: var(--erify-text-muted);
+  margin: 0;
+}
+
+/* Inputs */
+.field {
+  background: var(--erify-elev-1);
+  border: 2px solid var(--erify-elev-2);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  color: var(--erify-text);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.field:focus {
+  outline: none;
+  border-color: var(--erify-blue);
+  box-shadow: 0 0 10px 2px var(--erify-blue);
+}
+
+.field::placeholder {
+  color: var(--erify-text-muted);
+}
+
+/* Modal */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+  backdrop-filter: blur(8px);
+}
+
+.modal--hidden {
+  display: none;
+}
+
+.modal__content {
+  background: var(--erify-elev-1);
+  border-radius: 16px;
+  padding: 2rem;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 8px 48px rgba(0, 0, 0, 0.8), 0 0 24px 6px var(--erify-blue);
+}
+
+.modal__close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: transparent;
+  border: none;
+  color: var(--erify-text-muted);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.modal__close:hover {
+  background: var(--erify-elev-2);
+  color: var(--erify-text);
+}
+
+.modal__header {
+  margin-bottom: 1.5rem;
+}
+
+.modal__title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--erify-text);
+  margin: 0;
+}
+
+.modal__webview {
+  width: 100%;
+  height: 70vh;
+  border: none;
+  border-radius: 8px;
+  background: var(--erify-black);
+}
+
+/* Screen Containers */
+.screen {
+  min-height: 100vh;
+  background: var(--erify-black);
+  padding: 1rem;
+}
+
+.screen__container {
+  max-width: 768px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.screen__header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.screen__title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--erify-text);
+  margin: 0 0 0.5rem 0;
+}
+
+.screen__subtitle {
+  color: var(--erify-text-muted);
+  margin: 0;
+}
+
+.screen__section {
+  background: var(--erify-elev-1);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.screen__section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--erify-text);
+  margin: 0 0 1rem 0;
+}
+
+/* Website Link Button Special Styling */
+.btn--website {
+  background: linear-gradient(135deg, var(--erify-blue) 0%, var(--erify-blue-electric) 100%);
+  color: var(--erify-black);
+  box-shadow: 0 0 18px 4px var(--erify-blue), 0 0 28px 10px var(--erify-orange-warm);
+  animation: pulse-glow 2s infinite;
+}
+
+.btn--website:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 30px 8px var(--erify-blue), 0 0 50px 20px var(--erify-orange-warm);
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 18px 4px var(--erify-blue), 0 0 28px 10px var(--erify-orange-warm);
+  }
+  50% {
+    box-shadow: 0 0 24px 6px var(--erify-blue), 0 0 36px 15px var(--erify-orange-warm);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .screen__container {
+    padding: 1rem;
+  }
+  
+  .modal__content {
+    padding: 1.5rem;
+    max-width: 95vw;
+  }
+  
+  .modal__webview {
+    height: 60vh;
+  }
+  
+  .btn {
+    padding: 0.625rem 1.25rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* Focus Ring Enhancement */
+*:focus-visible {
+  outline: 2px solid var(--erify-blue-electric);
+  outline-offset: 2px;
+}
+
+/* Utility Classes */
+.text-center { text-align: center; }
+.text-muted { color: var(--erify-text-muted); }
+.mb-1 { margin-bottom: 0.5rem; }
+.mb-2 { margin-bottom: 1rem; }
+.mb-3 { margin-bottom: 1.5rem; }
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }
+.mt-3 { margin-top: 1.5rem; }
