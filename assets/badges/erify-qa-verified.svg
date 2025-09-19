@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="180" height="32" viewBox="0 0 180 32">
+  <defs>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FFD36E"/><stop offset="50%" stop-color="#FFB200"/><stop offset="100%" stop-color="#D99600"/>
+    </linearGradient>
+  </defs>
+  <rect width="180" height="32" rx="8" fill="#0B0B0B" stroke="url(#gold)"/>
+  <text x="12" y="21" fill="url(#gold)" font-family="Inter,Segoe UI,Arial" font-weight="700" font-size="12">ERIFY QA — Verified</text>
+</svg>
