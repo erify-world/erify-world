@@ -1,0 +1,26 @@
+{
+  "name": "erify-app",
+  "version": "1.0.0",
+  "description": "ERIFY™ App with Website Integration - Settings, Profile, and Feed screens",
+  "main": "index.html",
+  "scripts": {
+    "dev": "python3 -m http.server 8080",
+    "dev-alt": "python -m http.server 8080",
+    "preview": "echo 'Opening ERIFY App Demo...' && open http://localhost:8080 || echo 'Navigate to http://localhost:8080 in your browser'"
+  },
+  "keywords": [
+    "erify",
+    "luxury",
+    "ui",
+    "design-system",
+    "website-integration",
+    "mobile-app"
+  ],
+  "author": "ERIFY Technologies",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/erify-world/erify-world.git"
+  },
+  "homepage": "https://erifyworldwide.com"
+}
