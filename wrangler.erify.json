@@ -1,0 +1,9 @@
+{
+  "account_id": "<your-cloudflare-account-id>",
+  "workers_dev": true,
+  "vars": {
+    "APP_NAME": "ERIFY™",
+    "MOTTO": "From the ashes to the stars ⚡✨",
+    "CROWN": "Supreme 4 | Global Flame"
+  }
+}
